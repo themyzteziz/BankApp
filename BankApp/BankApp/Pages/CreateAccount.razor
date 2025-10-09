@@ -1,0 +1,76 @@
+﻿@page "/CreateAccount"
+@inject IAccountService AccountService
+
+<h3>Vänligen Skapa ett konto</h3>
+
+<EditForm Model="_model" OnValidSubmit="CreateAccountAsync">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-2">
+        <label>Kontonamn</label>
+        <InputText @bind-Value="_model.Name" />
+    </div>
+
+    <div>
+        <label>Kontotyp</label>
+        <InputSelect @bind-Value="_model.accountType" TValue="AccountType">
+            <option value="">Välj kontotyp!</option>
+            <option value="@AccountType.Deposit">Sparkonto</option>
+            <option value="@AccountType.Savings">Bankkonto</option>
+        </InputSelect>
+    </div>
+
+    <div>
+        <label>Valuta</label>
+        <InputText @bind-Value="_model.Currency" />
+    </div>
+
+    <div>
+        <label>Start Saldo</label>
+        <InputNumber @bind-Value="_model.initialBalance" TValue="decimal?" />
+    </div>
+
+    <button type="submit">Skapa konto</button>
+</EditForm>
+
+@code {
+    private CreateAccountModel _model = new();
+
+    private Task CreateAccountAsync()
+    {
+        try
+        {
+            Console.WriteLine(_model.Name);
+            AccountService.CreateAccount(
+             _model.Name ?? string.Empty,
+                _model.Currency,
+                _model.initialBalance ?? 0,
+                _model.accountType
+
+            );
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception);
+            throw;
+        }
+        return Task.CompletedTask;
+    }
+
+    private class CreateAccountModel
+    {
+        public string? Name { get; set; } = string.Empty;
+        public AccountType accountType { get; set; }
+        public string Currency { get; set; } = string.Empty;
+        public decimal? initialBalance { get; set; } = 0;
+
+        public void Clear()
+        {
+            Name = string.Empty;
+            accountType = AccountType.Deposit;
+            Currency = "SEK";
+            initialBalance = 0;
+        }
+    }
+}

@@ -6,6 +6,7 @@
     public interface IBankAccount
     {
         Guid id { get; }
+        AccountType AccountType { get; }
         string Name { get; }
         string Currency { get; }
         decimal Balance { get; }

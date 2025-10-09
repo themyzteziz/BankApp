@@ -1,16 +1,23 @@
-﻿
+﻿using BankApp.Domain;
+
 namespace BankApp.Services
 {
     public class AccountService : IAccountService
     {
-        public IBankAccount CreateAccount(string name, string currency, decimal initialBalance)
+        private readonly List<IBankAccount> _accounts;
+
+        public AccountService()
         {
-            throw new NotImplementedException();
+            _accounts = new List<IBankAccount>();
         }
 
-        public List<IBankAccount> GetAllAccounts()
+        public IBankAccount CreateAccount(string name, string currency, decimal initialBalance, AccountType accountType)
         {
-            throw new NotImplementedException();
+            var account = new BankAccount(name, currency, accountType, initialBalance);
+            _accounts.Add(account);
+            return account;
         }
+
+        public List<IBankAccount> GetAllAccounts() => _accounts;
     }
 }
