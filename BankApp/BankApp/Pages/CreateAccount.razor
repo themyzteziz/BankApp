@@ -1,5 +1,7 @@
 ﻿@page "/CreateAccount"
 @inject IAccountService AccountService
+@using BankApp.Domain
+@using BankApp.Interfaces
 
 <h3>Vänligen Skapa ett konto</h3>
 
@@ -34,26 +36,49 @@
     <button type="submit">Skapa konto</button>
 </EditForm>
 
+
+
+<h4>Alla konton</h4>
+
+@if(_accounts.Count == 0)
+{
+    <p>Inga konton skapade än. Skapa konto ovan!</p>
+}
+else
+{
+    <ul>
+        @foreach (var account in _accounts)
+        {
+            <strong>@account.AccountType - @account.Balance - @account.Name</strong>
+            <small>(uppdaterad @account.LastUpdated.ToLocalTime())</small>
+        }
+    </ul>
+}
 @code {
     private CreateAccountModel _model = new();
+    private List<IBankAccount> _accounts = new();
 
+    protected override void OnInitialized()
+    {
+        _accounts = AccountService.GetAllAccounts().ToList();
+    }
     private Task CreateAccountAsync()
     {
         try
         {
             Console.WriteLine(_model.Name);
             AccountService.CreateAccount(
-             _model.Name ?? string.Empty,
+                _model.Name ?? string.Empty,
                 _model.Currency,
                 _model.initialBalance ?? 0,
                 _model.accountType
-
             );
+            _accounts = AccountService.GetAllAccounts().ToList();
+            _model.Clear();
         }
         catch (Exception exception)
         {
             Console.WriteLine(exception);
-            throw;
         }
         return Task.CompletedTask;
     }

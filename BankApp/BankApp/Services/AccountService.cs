@@ -19,5 +19,8 @@ namespace BankApp.Services
         }
 
         public List<IBankAccount> GetAllAccounts() => _accounts;
+
+        
+
     }
 }

@@ -15,5 +15,9 @@
         void withdraw(decimal amount);
         void deposit(decimal amount);
 
+        IReadOnlyList<Transaction> Transactions { get; }   // läs-utan-att-muta
+        void AddTransaction(Transaction transaction);
+
+
     }
 }
