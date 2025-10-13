@@ -5,19 +5,17 @@
     /// </summary>
     public interface IBankAccount
     {
-        Guid id { get; }
+        Guid Id { get; }
         AccountType AccountType { get; }
         string Name { get; }
         string Currency { get; }
         decimal Balance { get; }
         DateTime LastUpdated { get; }
+        
+        void Withdraw(decimal amount);
+        void Deposit(decimal amount);   
 
-        void withdraw(decimal amount);
-        void deposit(decimal amount);
-
-        IReadOnlyList<Transaction> Transactions { get; }   // läs-utan-att-muta
+        IReadOnlyList<Transaction> Transactions { get; }
         void AddTransaction(Transaction transaction);
-
-
     }
 }

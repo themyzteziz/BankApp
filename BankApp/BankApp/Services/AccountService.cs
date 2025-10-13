@@ -1,26 +1,79 @@
-﻿using BankApp.Domain;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using BankApp.Domain;
+using BankApp.Interfaces;
 
 namespace BankApp.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly List<IBankAccount> _accounts;
+        private const string StorageKey = "bankapp.accounts";
 
-        public AccountService()
+        private readonly List<IBankAccount> _accounts = new();
+        private readonly IStorageService _storageService;
+        private bool isLoaded;
+
+        public AccountService(IStorageService storageService)
         {
-            _accounts = new List<IBankAccount>();
+            _storageService = storageService;
         }
 
-        public IBankAccount CreateAccount(string name, string currency, decimal initialBalance, AccountType accountType)
+        private async Task InitializeAsync()
         {
-            var account = new BankAccount(name, currency, accountType, initialBalance);
+            if (isLoaded)
+                return;
+
+            // Hämta konton från storage — använd BankAccount, inte IBankAccount, för JSON-deserialisering
+            var fromStorage = await _storageService.GetItemAsync<List<BankAccount>>(StorageKey);
+
+            _accounts.Clear();
+
+            if (fromStorage is { Count: > 0 })
+            {
+                foreach (var account in fromStorage)
+                    _accounts.Add(account);
+            }
+
+            isLoaded = true;
+        }
+
+        private async Task SaveAsync()
+        {
+            // JSON kan inte serialisera interfaces → casta till konkreta typer
+            var concreteAccounts = _accounts.OfType<BankAccount>().ToList();
+            await _storageService.SetItemAsync(StorageKey, concreteAccounts);
+        }
+
+        public async Task<IBankAccount> CreateAccount(string name, string currency, decimal balance, AccountType accountType)
+        {
+            await InitializeAsync();
+
+            var account = new BankAccount(name, currency, balance, accountType);
+
             _accounts.Add(account);
+
+            await SaveAsync();
             return account;
         }
 
-        public List<IBankAccount> GetAllAccounts() => _accounts;
+        public async Task<IBankAccount?> GetAccount(Guid id)
+        {
+            await InitializeAsync();
 
-        
+            var account = _accounts.FirstOrDefault(a => a.Id == id);
 
+            if (account is null)
+                throw new KeyNotFoundException($"Account with id {id} not found.");
+
+            return account;
+        }
+
+        public async Task<List<IBankAccount>> GetAllAccounts()
+        {
+            await InitializeAsync();
+            return _accounts.ToList();
+        }
     }
 }

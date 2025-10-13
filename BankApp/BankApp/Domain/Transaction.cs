@@ -16,6 +16,7 @@
             Description = description;
             Type = type;
             Currency = currency;
+            Date = DateTime.Now;
         }
     }
 

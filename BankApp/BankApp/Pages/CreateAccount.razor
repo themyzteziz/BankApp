@@ -1,7 +1,9 @@
 ﻿@page "/CreateAccount"
-@inject IAccountService AccountService
+@inject BankApp.Interfaces.IAccountService AccountService
+    
 @using BankApp.Domain
 @using BankApp.Interfaces
+@using System.ComponentModel.DataAnnotations
 
 <h3>Vänligen Skapa ett konto</h3>
 
@@ -12,6 +14,7 @@
     <div class="mb-2">
         <label>Kontonamn</label>
         <InputText @bind-Value="_model.Name" />
+        <ValidationMessage For="@(() => _model.Name)" />
     </div>
 
     <div>
@@ -36,11 +39,9 @@
     <button type="submit">Skapa konto</button>
 </EditForm>
 
-
-
 <h4>Alla konton</h4>
 
-@if(_accounts.Count == 0)
+@if (_accounts.Count == 0)
 {
     <p>Inga konton skapade än. Skapa konto ovan!</p>
 }
@@ -49,51 +50,55 @@ else
     <ul>
         @foreach (var account in _accounts)
         {
-            <strong>@account.AccountType - @account.Balance - @account.Name</strong>
-            <small>(uppdaterad @account.LastUpdated.ToLocalTime())</small>
+            <li>
+                <strong>@account.AccountType - @account.Balance - @account.Name</strong>
+                @* <small>(uppdaterad @account.LastUpdated.ToLocalTime())</small> *@
+            </li>
         }
     </ul>
 }
+
 @code {
     private CreateAccountModel _model = new();
     private List<IBankAccount> _accounts = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        _accounts = AccountService.GetAllAccounts().ToList();
+        _accounts = await AccountService.GetAllAccounts();
     }
-    private Task CreateAccountAsync()
+
+    private async Task CreateAccountAsync()
     {
         try
         {
-            Console.WriteLine(_model.Name);
-            AccountService.CreateAccount(
-                _model.Name ?? string.Empty,
-                _model.Currency,
-                _model.initialBalance ?? 0,
-                _model.accountType
+            await AccountService.CreateAccount(
+             _model.Name ?? string.Empty,
+             _model.Currency,
+             _model.initialBalance ?? 0,
+             _model.accountType
             );
-            _accounts = AccountService.GetAllAccounts().ToList();
+
+            _accounts = await AccountService.GetAllAccounts();
             _model.Clear();
+            StateHasChanged();
         }
         catch (Exception exception)
         {
             Console.WriteLine(exception);
         }
-        return Task.CompletedTask;
     }
 
     private class CreateAccountModel
     {
+        [Required(ErrorMessage = "Kontonamn krävs")]
         public string? Name { get; set; } = string.Empty;
         public AccountType accountType { get; set; }
-        public string Currency { get; set; } = string.Empty;
+        public string Currency { get; set; } = "SEK";
         public decimal? initialBalance { get; set; } = 0;
 
         public void Clear()
         {
             Name = string.Empty;
-            accountType = AccountType.Deposit;
             Currency = "SEK";
             initialBalance = 0;
         }

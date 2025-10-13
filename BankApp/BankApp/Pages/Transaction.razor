@@ -1,0 +1,105 @@
+﻿@page "/transactions"
+@inject BankApp.Interfaces.IAccountService AccountService
+
+
+@using BankApp.Domain
+@using BankApp.Interfaces
+
+<h3>Hantera transaktioner</h3>
+
+@if (accounts.Count == 0)
+{
+    <p>Inga konton skapade ännu.</p>
+}
+else
+{
+    <div class="mb-3">
+        <label>Välj konto:</label>
+        <select @onchange="OnAccountChanged">
+            <option value="">-- Välj konto --</option>
+            @foreach (var acc in accounts)
+            {
+                <option value="@acc.Name">@acc.Name (@acc.Currency)</option>
+            }
+        </select>
+    </div>
+
+    @if (selectedAccount is not null)
+    {
+        <EditForm Model="transactionModel" OnValidSubmit="AddTransaction">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div>
+                <label>Belopp:</label>
+                <InputNumber @bind-Value="transactionModel.Amount" TValue="decimal" />
+            </div>
+
+            <div>
+                <label>Beskrivning:</label>
+                <InputText @bind-Value="transactionModel.Description" />
+            </div>
+
+            <div>
+                <label>Typ:</label>
+                <InputSelect @bind-Value="transactionModel.Type">
+                    <option value="@TransactionType.Deposit">Insättning</option>
+                    <option value="@TransactionType.Withdrawal">Uttag</option>
+                </InputSelect>
+            </div>
+
+            <button type="submit">Lägg till transaktion</button>
+        </EditForm>
+
+        <h4 class="mt-4">Transaktioner för @selectedAccount.Name</h4>
+        <ul>
+            @foreach (var t in selectedAccount.Transactions)
+            {
+                <li>@t.Date: @t.Type - @t.Amount @selectedAccount.Currency (@t.Description)</li>
+            }
+        </ul>
+    }
+}
+
+@code {
+    private List<IBankAccount> accounts = new();
+    private IBankAccount? selectedAccount;
+    private TransactionModel transactionModel = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        accounts = await AccountService.GetAllAccounts();
+    }
+
+    private void OnAccountChanged(ChangeEventArgs e)
+    {
+        var selectedName = e.Value?.ToString();
+        selectedAccount = accounts.FirstOrDefault(a => a.Name == selectedName);
+    }
+
+    private void AddTransaction()
+    {
+        if (selectedAccount is null)
+            return;
+
+        var tx = new BankApp.Domain.Transaction(
+            transactionModel.Amount,
+            transactionModel.Description ?? "",
+            transactionModel.Type,
+            selectedAccount.Currency);
+
+        if (selectedAccount is BankAccount acc)
+        {
+            acc.AddTransaction(tx);
+        }
+
+        transactionModel = new(); // Rensa formuläret
+    }
+
+    private class TransactionModel
+    {
+        public decimal Amount { get; set; }
+        public string? Description { get; set; }
+        public TransactionType Type { get; set; }
+    }
+}
