@@ -1,5 +1,6 @@
 ﻿@page "/Accounts"
 @inject IAccountService AccountService
+@inject IJSRuntime JS
 @using BankApp.Domain
 @using BankApp.Interfaces
 
@@ -23,6 +24,20 @@ else
                 Saldo: @acc.Balance @acc.Currency<br />
                 <small>Senast uppdaterad: @acc.LastUpdated.ToLocalTime()</small>
             </li>
+               @if (acc.Balance == 0m)
+                {
+                    <button class="btn btn-sm btn-danger"
+                            @onclick="async () => await RemoveAccount(acc.Id)">
+                        Ta bort konto
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-sm btn-secondary" disabled title="Saldo måste vara 0">
+                        Kan inte ta bort
+                    </button>
+                }
+            
         }
     </ul>
 }
@@ -33,5 +48,12 @@ else
     protected override async Task OnInitializedAsync()
     {
         accounts = await AccountService.GetAllAccounts();
+    }
+    private async Task RemoveAccount(Guid id)
+    {
+        
+        await AccountService.DeleteAccount(id);          
+        accounts = await AccountService.GetAllAccounts(); 
+        StateHasChanged();
     }
 }

@@ -75,5 +75,13 @@ namespace BankApp.Services
             await InitializeAsync();
             return _accounts.ToList();
         }
+        public async Task DeleteAccount(Guid id)
+        {
+            await InitializeAsync();
+            var acc = _accounts.FirstOrDefault(a => a.Id == id)
+                      ?? throw new KeyNotFoundException($"Account {id} not found.");
+            _accounts.Remove(acc);
+            await SaveAsync();
+        }
     }
 }
