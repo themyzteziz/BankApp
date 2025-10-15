@@ -4,6 +4,34 @@
 @using BankApp.Interfaces
 
 <h3>Mina konton</h3>
-@code {
 
+@if (accounts is null)
+{
+    <p>Laddar konton...</p>
+}
+else if (accounts.Count == 0)
+{
+    <p>Inga konton hittades. Skapa ett konto först!</p>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var acc in accounts)
+        {
+            <li class="list-group-item">
+                <strong>@acc.Name</strong> — @acc.AccountType<br />
+                Saldo: @acc.Balance @acc.Currency<br />
+                <small>Senast uppdaterad: @acc.LastUpdated.ToLocalTime()</small>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private List<IBankAccount>? accounts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        accounts = await AccountService.GetAllAccounts();
+    }
 }
