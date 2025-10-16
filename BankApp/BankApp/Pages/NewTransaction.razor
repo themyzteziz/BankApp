@@ -1,0 +1,110 @@
+﻿@page "/Transaction"
+@inject BankApp.Interfaces.IAccountService AccountService
+@using BankApp.Domain
+@using BankApp.Interfaces
+
+<h3>Överföring mellan konton</h3>
+
+@if (accounts.Count < 2)
+{
+    <p>Du behöver minst två konton för att göra en överföring.</p>
+}
+else
+{
+    <EditForm Model="transferModel" OnValidSubmit="DoTransfer">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-2">
+            <label>Från konto:</label>
+            <InputSelect @bind-Value="transferModel.FromAccountId">
+                <option value="">-- Välj konto --</option>
+                @foreach (var acc in accounts)
+                {
+                    <option value="@acc.Id">@acc.Name (@acc.Currency)</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-2">
+            <label>Till konto:</label>
+            <InputSelect @bind-Value="transferModel.ToAccountId">
+                <option value="">-- Byt konto --</option>
+                @foreach (var acc in accounts)
+                {
+                    <option value="@acc.Id">@acc.Name (@acc.Currency)</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-2">
+            <label>Belopp:</label>
+            <InputNumber @bind-Value="transferModel.Amount" TValue="decimal" />
+        </div>
+
+        <button type="submit">Överför</button>
+    </EditForm>
+
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <p>@message</p>
+    }
+}
+
+@code {
+    private List<IBankAccount> accounts = new();
+    private TransferModel transferModel = new();
+    private string? message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        accounts = await AccountService.GetAllAccounts();
+    }
+
+    private void DoTransfer()
+    {
+        if (transferModel.FromAccountId == transferModel.ToAccountId)
+        {
+            message = "You cannot transfer to the same account.";
+            return;
+        }
+
+        var fromAccount = accounts.FirstOrDefault(a => a.Id == transferModel.FromAccountId) as BankAccount;
+        var toAccount = accounts.FirstOrDefault(a => a.Id == transferModel.ToAccountId) as BankAccount;
+
+        if (fromAccount is null || toAccount is null)
+        {
+            message = "Invalid accounts selected.";
+            return;
+        }
+
+        if (transferModel.Amount <= 0 || transferModel.Amount > fromAccount.Balance)
+        {
+            message = "Invalid transfer amount.";
+            return;
+        }
+
+        
+        fromAccount.AddTransaction(new Transaction(
+            transferModel.Amount,
+            $"Transfer to {toAccount.Name}",
+            TransactionType.Withdrawal,
+            fromAccount.Currency));
+
+        toAccount.AddTransaction(new Transaction(
+            transferModel.Amount,
+            $"Transfer from {fromAccount.Name}",
+            TransactionType.Deposit,
+            toAccount.Currency));
+
+        message = $"Successfully transferred {transferModel.Amount} {fromAccount.Currency} from {fromAccount.Name} to {toAccount.Name}.";
+        transferModel = new TransferModel(); 
+    }
+
+    private class TransferModel
+    {
+        public Guid FromAccountId { get; set; }
+        public Guid ToAccountId { get; set; }
+        public decimal Amount { get; set; }
+    }
+}

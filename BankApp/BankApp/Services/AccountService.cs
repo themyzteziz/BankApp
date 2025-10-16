@@ -25,7 +25,7 @@ namespace BankApp.Services
             if (isLoaded)
                 return;
 
-            // Hämta konton från storage — använd BankAccount, inte IBankAccount, för JSON-deserialisering
+            
             var fromStorage = await _storageService.GetItemAsync<List<BankAccount>>(StorageKey);
 
             _accounts.Clear();
@@ -41,7 +41,7 @@ namespace BankApp.Services
 
         private async Task SaveAsync()
         {
-            // JSON kan inte serialisera interfaces → casta till konkreta typer
+            
             var concreteAccounts = _accounts.OfType<BankAccount>().ToList();
             await _storageService.SetItemAsync(StorageKey, concreteAccounts);
         }

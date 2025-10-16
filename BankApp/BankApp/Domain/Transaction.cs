@@ -9,8 +9,10 @@
         public string Description { get; private set; } = string.Empty;
         public string Currency { get; private set; } = "SEK";
         public TransactionType Type { get; private set; }
+        public Guid TransferReciever { get; set; } = Guid.Empty;
+        public decimal BalanceAfterTransaction { get; set; }    
 
-        public Transaction(decimal amount, string description, TransactionType type, string currency = "SEK")
+        public Transaction(decimal amount, string description, TransactionType type, string currency)
         {
             Amount = amount;
             Description = description;
