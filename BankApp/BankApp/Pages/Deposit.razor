@@ -46,18 +46,21 @@ else
                 </InputSelect>
             </div>
 
-            <button type="submit">Insätt/Uttag</button>
+            <button type="submit">Utför</button>
         </EditForm>
 
-        <h4 class="mt-4">Insättning/uttag för @selectedAccount.Name</h4>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <p style="color:red;">@errorMessage</p>
+        }
+
+        <h4 class="mt-4">Transaktioner för @selectedAccount.Name</h4>
         <ul>
             @foreach (var t in selectedAccount.Transactions)
             {
                 <li>@t.Date: @t.Type - @t.Amount @selectedAccount.Currency (@t.Description)</li>
             }
         </ul>
-
-        <button type="submit"></button>
     }
 }
 
@@ -65,6 +68,7 @@ else
     private List<IBankAccount> accounts = new();
     private IBankAccount? selectedAccount;
     private TransactionModel transactionModel = new();
+    private string? errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,24 +80,34 @@ else
         var selectedName = e.Value?.ToString();
         selectedAccount = accounts.FirstOrDefault(a => a.Name == selectedName);
         transactionModel = new();
+        errorMessage = null;
     }
 
     private void AddTransaction()
     {
-        if (selectedAccount is null)
+        errorMessage = null;
+
+        if (selectedAccount is not BankAccount acc)
             return;
 
-        var tx = new BankApp.Domain.Transaction(
-            transactionModel.Amount,
-            transactionModel.Description ?? "",
-            transactionModel.Type,
-            selectedAccount.Currency);
-
-        transactionModel.TransferReceiver = selectedAccount.Id;
-
-        if (selectedAccount is BankAccount acc)
+        try
         {
-            acc.AddTransaction(tx);
+            if (transactionModel.Type == TransactionType.Deposit)
+                acc.Deposit(transactionModel.Amount);
+            else if (transactionModel.Type == TransactionType.Withdrawal)
+                acc.Withdraw(transactionModel.Amount);
+
+            var transaction = new Transaction(
+                transactionModel.Amount,
+                transactionModel.Description ?? "",
+                transactionModel.Type,
+                acc.Currency);
+
+            acc.AddTransaction(transaction);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
         }
 
         transactionModel = new();
@@ -104,6 +118,5 @@ else
         public decimal Amount { get; set; }
         public string? Description { get; set; }
         public TransactionType Type { get; set; }
-        public Guid TransferReceiver { get; set; } = Guid.Empty;
     }
 }

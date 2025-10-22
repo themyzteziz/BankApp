@@ -62,14 +62,21 @@ namespace BankApp.Domain
         public void AddTransaction(Transaction transaction)
         {
             if (transaction is null) throw new ArgumentNullException(nameof(transaction));
+            if (_transactions.Any(t => t.Id == transaction.Id))
+                return;
+
             _transactions.Add(transaction);
 
             Balance += transaction.Type switch
             {
                 TransactionType.Deposit => transaction.Amount,
                 TransactionType.Withdrawal => -transaction.Amount,
+                TransactionType.Transfer => 0,
                 _ => 0m
             };
+            transaction.BalanceAfterTransaction = Balance;
+
+            
 
             LastUpdated = DateTime.Now;
         }

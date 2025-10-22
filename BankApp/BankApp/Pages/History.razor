@@ -11,53 +11,184 @@
 }
 else
 {
-    <ul class="list-group">
-        @foreach (var acc in accounts)
+    <div class="filter-bar">
+
+        <label>Konto:</label>
+        <select @bind="selectedAccountId" @bind:event="onchange">
+            <option value="">Alla konton</option>
+            @foreach (var acc in accounts)
+            {
+                <option value="@acc.Id">@acc.Name (@acc.Currency)</option>
+            }
+        </select>
+
+        <label>Typ:</label>
+        <select @bind="selectedType" @bind:event="onchange">
+            <option value="">Alla typer</option>
+            @foreach (var type in Enum.GetValues<TransactionType>())
+            {
+                <option value="@type">@type</option>
+            }
+        </select>
+
+        <label>Från:</label>
+        <input type="date" @bind="fromDate" @bind:event="onchange" />
+
+        <label>Till:</label>
+        <input type="date" @bind="toDate" @bind:event="onchange" />
+
+        <label>Min:</label>
+        <input type="number" @bind="minAmount" @bind:event="onchange" />
+
+        <label>Max:</label>
+        <input type="number" @bind="maxAmount" @bind:event="onchange" />
+
+        <label>Sortering:</label>
+        <select @bind="sortBy" @bind:event="onchange">
+            <option value="date_desc">Datum (Nyast)</option>
+            <option value="date_asc">Datum (Äldst)</option>
+            <option value="amount_desc">Belopp (Störst)</option>
+            <option value="amount_asc">Belopp (Minst)</option>
+        </select>
+
+        <button class="reset-btn" @onclick="ResetFilters">Återställ</button>
+    </div>
+
+    <div class="account-container">
+        @foreach (var acc in FilteredAccounts())
         {
-            <li class="list-group-item">
-                <div>
-                    <strong>@acc.Name</strong> — @acc.AccountType<br />
-                    Saldo: @acc.Balance @acc.Currency<br />
-                    <small>Senast uppdaterad: @acc.LastUpdated.ToLocalTime()</small>
-                </div>
+            <div class="account-section">
+                <h4>@acc.Name — @acc.AccountType</h4>
+                <p><strong>Saldo:</strong> @acc.Balance @acc.Currency</p>
 
-                <h5 class="mt-3">Transaktioner:</h5>
-
-                @if (acc.Transactions == null || acc.Transactions.Count == 0)
-                {
-                    <small>Inga överföring hittades för detta konto.</small>
-                }
-                else
-                {
-                    <ul class="list-group list-group-flush">
-                        @foreach (var tx in acc.Transactions)
+                <table class="transaction-table">
+                    <thead>
+                        <tr>
+                            <th>Från</th>
+                            <th>Typ</th>
+                            <th>Beskrivning</th>
+                            <th>Belopp</th>
+                            <th>Datum</th>
+                            <th>Saldo efter</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (FilteredTransactions(acc).Count == 0)
                         {
-                            <li class="list-group-item">
-                                <div>
-                                    <strong>@tx.Date.ToLocalTime():</strong>
-                                    @tx.Amount @tx.Currency
-                                    <span class="text-muted">(@tx.Type)</span>
-                                </div>
-                                <div>
-                                    <small>@tx.Description</small>
-                                </div>
-                                <div>
-                                    <small>Saldo efter överföring: @acc.Balance</small>
-                                </div>
-                            </li>
+                            <tr>
+                                <td colspan="6" style="text-align:center; opacity:0.7;">Inga transaktioner matchar filtren</td>
+                            </tr>
                         }
-                    </ul>
-                }
-            </li>
+                        else
+                        {
+                            @foreach (var t in FilteredTransactions(acc))
+                            {
+                                <tr>
+                                    <td>@acc.Name</td>
+                                    <td>@t.Type</td>
+                                    <td>@t.Description</td>
+                                    <td>@t.Amount @t.Currency</td>
+                                    <td>@t.Date.ToLocalTime()</td>
+                                    <td>@t.BalanceAfterTransaction</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
         }
-    </ul>
+    </div>
 }
 
 @code {
     private List<IBankAccount> accounts = new();
+    private string? selectedAccountId;
+    private string? selectedType;
+    private DateTime? fromDate;
+    private DateTime? toDate;
+    private decimal? minAmount;
+    private decimal? maxAmount;
+    private string sortBy = "date_desc";
 
     protected override async Task OnInitializedAsync()
     {
         accounts = await AccountService.GetAllAccounts();
     }
+
+    private List<IBankAccount> FilteredAccounts()
+    {
+        if (string.IsNullOrEmpty(selectedAccountId))
+            return accounts;
+        return accounts.Where(a => a.Id.ToString() == selectedAccountId).ToList();
+    }
+
+    private List<Transaction> FilteredTransactions(IBankAccount acc)
+    {
+        var transactions = acc.Transactions.AsEnumerable();
+
+        if (!string.IsNullOrEmpty(selectedType) && Enum.TryParse<TransactionType>(selectedType, out var type))
+            transactions = transactions.Where(t => t.Type == type);
+
+        if (fromDate.HasValue)
+            transactions = transactions.Where(t => t.Date >= fromDate.Value);
+
+        if (toDate.HasValue)
+            transactions = transactions.Where(t => t.Date <= toDate.Value);
+
+        if (minAmount.HasValue)
+            transactions = transactions.Where(t => t.Amount >= minAmount.Value);
+
+        if (maxAmount.HasValue)
+            transactions = transactions.Where(t => t.Amount <= maxAmount.Value);
+
+        transactions = sortBy switch
+        {
+            "date_asc" => transactions.OrderBy(t => t.Date),
+            "amount_desc" => transactions.OrderByDescending(t => t.Amount),
+            "amount_asc" => transactions.OrderBy(t => t.Amount),
+            _ => transactions.OrderByDescending(t => t.Date)
+        };
+
+        return transactions.ToList();
+    }
+
+    private void ResetFilters()
+    {
+        selectedAccountId = null;
+        selectedType = null;
+        fromDate = null;
+        toDate = null;
+        minAmount = null;
+        maxAmount = null;
+        sortBy = "date_desc";
+        StateHasChanged();
+    }
 }
+
+<style>
+.transaction-table {
+    width: 100%;
+    border-collapse: separate;   
+    border-spacing: 0 6px;       
+    margin-top: 1rem;
+}
+
+.transaction-table th {
+    background-color: #f0f0f0;
+    padding: 10px 14px;          
+    text-align: left;
+    font-weight: 600;
+    white-space: nowrap;         
+}
+
+.transaction-table td {
+    padding: 10px 14px;          
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+}
+
+.transaction-table tr:hover td {
+    background-color: #f9f9f9;
+}
+</style>

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BankApp.Domain;
 using BankApp.Interfaces;
 
@@ -25,15 +22,18 @@ namespace BankApp.Services
             if (isLoaded)
                 return;
 
-            
             var fromStorage = await _storageService.GetItemAsync<List<BankAccount>>(StorageKey);
 
             _accounts.Clear();
 
-            if (fromStorage is { Count: > 0 })
+            if (fromStorage != null && fromStorage.Count > 0)
             {
+                
                 foreach (var account in fromStorage)
-                    _accounts.Add(account);
+                {
+                    if (!_accounts.Any(a => a.Id == account.Id))
+                        _accounts.Add(account);
+                }
             }
 
             isLoaded = true;
@@ -50,8 +50,11 @@ namespace BankApp.Services
         {
             await InitializeAsync();
 
-            var account = new BankAccount(name, currency, balance, accountType);
+            
+            if (_accounts.Any(a => a.Name == name))
+                throw new InvalidOperationException($"Konto med namnet '{name}' finns redan.");
 
+            var account = new BankAccount(name, currency, balance, accountType);
             _accounts.Add(account);
 
             await SaveAsync();
@@ -73,14 +76,24 @@ namespace BankApp.Services
         public async Task<List<IBankAccount>> GetAllAccounts()
         {
             await InitializeAsync();
+            
             return _accounts.ToList();
         }
+
         public async Task DeleteAccount(Guid id)
         {
             await InitializeAsync();
+
             var acc = _accounts.FirstOrDefault(a => a.Id == id)
                       ?? throw new KeyNotFoundException($"Account {id} not found.");
+
             _accounts.Remove(acc);
+            await SaveAsync();
+        }
+
+        
+        public async Task SaveAccountsAsync()
+        {
             await SaveAsync();
         }
     }
