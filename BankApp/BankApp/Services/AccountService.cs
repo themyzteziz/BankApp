@@ -38,14 +38,25 @@ namespace BankApp.Services
 
             isLoaded = true;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private async Task SaveAsync()
         {
             
             var concreteAccounts = _accounts.OfType<BankAccount>().ToList();
             await _storageService.SetItemAsync(StorageKey, concreteAccounts);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="currency"></param>
+        /// <param name="balance"></param>
+        /// <param name="accountType"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public async Task<IBankAccount> CreateAccount(string name, string currency, decimal balance, AccountType accountType)
         {
             await InitializeAsync();
@@ -60,7 +71,12 @@ namespace BankApp.Services
             await SaveAsync();
             return account;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<IBankAccount?> GetAccount(Guid id)
         {
             await InitializeAsync();
@@ -72,14 +88,22 @@ namespace BankApp.Services
 
             return account;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<IBankAccount>> GetAllAccounts()
         {
             await InitializeAsync();
             
             return _accounts.ToList();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task DeleteAccount(Guid id)
         {
             await InitializeAsync();
@@ -91,7 +115,12 @@ namespace BankApp.Services
             await SaveAsync();
         }
 
-        
+        /// <summary>
+        /// Asynchronously saves the current state of accounts to persistent storage.
+        /// </summary>
+        /// <remarks>This method performs an asynchronous operation to persist account data.  Ensure that
+        /// any changes to account data are complete before calling this method.</remarks>
+        /// <returns>A task that represents the asynchronous save operation.</returns>
         public async Task SaveAccountsAsync()
         {
             await SaveAsync();
