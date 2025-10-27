@@ -2,7 +2,6 @@
 @inject BankApp.Interfaces.IAccountService AccountService
 @using BankApp.Domain
 @using BankApp.Interfaces
-
 <h3>Historik</h3>
 
 @if (accounts == null || accounts.Count == 0)
@@ -151,7 +150,7 @@ else
 
         return transactions.ToList();
     }
-
+    // Kommentar på metoder
     private void ResetFilters()
     {
         selectedAccountId = null;
