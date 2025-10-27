@@ -43,14 +43,23 @@ namespace BankApp.Domain
             if (transactions is not null)
                 _transactions = transactions.ToList();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <exception cref="ArgumentException"></exception>
         public void Deposit(decimal amount)
         {
             if (amount <= 0) throw new ArgumentException("Amount must be positive");
             Balance += amount;
             LastUpdated = DateTime.Now;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         public void Withdraw(decimal amount)
         {
             if (amount <= 0) throw new ArgumentException("Amount must be positive");
@@ -58,7 +67,11 @@ namespace BankApp.Domain
             Balance -= amount;
             LastUpdated = DateTime.Now;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public void AddTransaction(Transaction transaction)
         {
             if (transaction is null) throw new ArgumentNullException(nameof(transaction));

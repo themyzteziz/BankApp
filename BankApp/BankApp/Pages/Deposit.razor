@@ -74,7 +74,10 @@ else
     {
         accounts = await AccountService.GetAllAccounts();
     }
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="e"></param>
     private void OnAccountChanged(ChangeEventArgs e)
     {
         var selectedName = e.Value?.ToString();
@@ -82,7 +85,9 @@ else
         transactionModel = new();
         errorMessage = null;
     }
-
+    /// <summary>
+    /// 
+    /// </summary>
     private void AddTransaction()
     {
         errorMessage = null;
