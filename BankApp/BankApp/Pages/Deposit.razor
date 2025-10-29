@@ -88,7 +88,7 @@ else
     /// <summary>
     /// 
     /// </summary>
-    private void AddTransaction()
+    private async Task AddTransaction()
     {
         errorMessage = null;
 
@@ -109,7 +109,10 @@ else
                 acc.Currency);
 
             acc.AddTransaction(transaction);
+
+            await AccountService.SaveAccountsAsync();
         }
+
         catch (Exception ex)
         {
             errorMessage = ex.Message;

@@ -28,7 +28,7 @@ namespace BankApp.Services
 
             if (fromStorage != null && fromStorage.Count > 0)
             {
-                
+
                 foreach (var account in fromStorage)
                 {
                     if (!_accounts.Any(a => a.Id == account.Id))
@@ -44,7 +44,7 @@ namespace BankApp.Services
         /// <returns></returns>
         private async Task SaveAsync()
         {
-            
+
             var concreteAccounts = _accounts.OfType<BankAccount>().ToList();
             await _storageService.SetItemAsync(StorageKey, concreteAccounts);
         }
@@ -61,7 +61,7 @@ namespace BankApp.Services
         {
             await InitializeAsync();
 
-            
+
             if (_accounts.Any(a => a.Name == name))
                 throw new InvalidOperationException($"Konto med namnet '{name}' finns redan.");
 
@@ -95,7 +95,7 @@ namespace BankApp.Services
         public async Task<List<IBankAccount>> GetAllAccounts()
         {
             await InitializeAsync();
-            
+
             return _accounts.ToList();
         }
         /// <summary>
@@ -124,6 +124,8 @@ namespace BankApp.Services
         public async Task SaveAccountsAsync()
         {
             await SaveAsync();
+            var concreteAccounts = _accounts.OfType<BankAccount>().ToList();
+            await _storageService.SetItemAsync(StorageKey, concreteAccounts);
         }
     }
 }
