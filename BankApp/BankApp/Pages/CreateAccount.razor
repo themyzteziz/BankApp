@@ -55,15 +55,21 @@
 }
 else
 {
+    
     <ul class="list-group">
+        <table style="border-collapse: separate; border-spacing: 8px 10px;">
         @foreach (var account in _accounts)
         {
+            <tr>
             <li>
                 <strong>@account.AccountType - @account.Balance - @account.Name</strong>
                 @* <small>(uppdaterad @account.LastUpdated.ToLocalTime())</small> *@
             </li>
+			</tr>
         }
+	</table>
     </ul>
+    
 }
 
 @code {
