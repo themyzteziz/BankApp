@@ -1,5 +1,8 @@
 ﻿namespace BankApp.Interfaces
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IStorageService
     {
         Task SetItemAsync<T>(string key, T value);

@@ -67,6 +67,10 @@ else
         _accounts = await AccountService.GetAllAccounts();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     private async Task CreateAccountAsync()
     {
         try
@@ -95,7 +99,9 @@ else
         public AccountType accountType { get; set; }
         public string Currency { get; set; } = "SEK";
         public decimal? initialBalance { get; set; } = 0;
-
+        /// <summary>
+        /// 
+        /// </summary>
         public void Clear()
         {
             Name = string.Empty;

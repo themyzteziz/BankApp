@@ -4,6 +4,5 @@
     {
         Savings,
         Deposit
-
     }
 }

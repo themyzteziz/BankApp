@@ -13,10 +13,8 @@ namespace BankApp.Domain
 
         private readonly List<Transaction> _transactions = new();
         public IReadOnlyList<Transaction> Transactions => _transactions;
-
         
         public BankAccount() { }
-
         
         public BankAccount(string name, string currency, decimal balance, AccountType accountType)
         {
@@ -27,7 +25,6 @@ namespace BankApp.Domain
             AccountType = accountType;
             
         }
-
         
         [JsonConstructor]
         public BankAccount(Guid id, string name, string currency, decimal balance, DateTime lastUpdated, AccountType accountType, IReadOnlyList<Transaction>? transactions = null)
@@ -37,8 +34,7 @@ namespace BankApp.Domain
             Currency = currency;
             Balance = balance;
             LastUpdated = lastUpdated;
-            AccountType = accountType;
-            
+            AccountType = accountType;           
 
             if (transactions is not null)
                 _transactions = transactions.ToList();
@@ -87,9 +83,7 @@ namespace BankApp.Domain
                 TransactionType.Transfer => 0,
                 _ => 0m
             };
-            transaction.BalanceAfterTransaction = Balance;
-
-            
+            transaction.BalanceAfterTransaction = Balance;                     
 
             LastUpdated = DateTime.Now;
         }

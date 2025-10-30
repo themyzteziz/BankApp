@@ -7,7 +7,6 @@ namespace BankApp.Services
     public class AccountService : IAccountService
     {
         private const string StorageKey = "bankapp.accounts";
-
         private readonly List<IBankAccount> _accounts = new();
         private readonly IStorageService _storageService;
         private bool isLoaded;
@@ -17,6 +16,10 @@ namespace BankApp.Services
             _storageService = storageService;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private async Task InitializeAsync()
         {
             if (isLoaded)
@@ -38,6 +41,7 @@ namespace BankApp.Services
 
             isLoaded = true;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -48,6 +52,7 @@ namespace BankApp.Services
             var concreteAccounts = _accounts.OfType<BankAccount>().ToList();
             await _storageService.SetItemAsync(StorageKey, concreteAccounts);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -71,6 +76,7 @@ namespace BankApp.Services
             await SaveAsync();
             return account;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -88,6 +94,7 @@ namespace BankApp.Services
 
             return account;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -98,6 +105,7 @@ namespace BankApp.Services
             
             return _accounts.ToList();
         }
+
         /// <summary>
         /// 
         /// </summary>

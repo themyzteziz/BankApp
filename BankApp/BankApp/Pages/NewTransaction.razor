@@ -85,8 +85,7 @@ else
             message = "Ogiltigt överföringsbelopp.";
             return;
         }
-
-        
+                
         fromAccount.AddTransaction(new Transaction(
             transferModel.Amount,
             $"Överför till {toAccount.Name}",

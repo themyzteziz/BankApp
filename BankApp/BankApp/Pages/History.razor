@@ -108,19 +108,25 @@ else
     private decimal? minAmount;
     private decimal? maxAmount;
     private string sortBy = "date_desc";
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     protected override async Task OnInitializedAsync()
     {
         accounts = await AccountService.GetAllAccounts();
     }
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     private List<IBankAccount> FilteredAccounts()
     {
         if (string.IsNullOrEmpty(selectedAccountId))
             return accounts;
         return accounts.Where(a => a.Id.ToString() == selectedAccountId).ToList();
     }
-
+    //
     private List<Transaction> FilteredTransactions(IBankAccount acc)
     {
         var transactions = acc.Transactions.AsEnumerable();
@@ -150,7 +156,9 @@ else
 
         return transactions.ToList();
     }
-    // Kommentar på metoder
+    ///  <summary>
+    /// 
+    /// </summary>
     private void ResetFilters()
     {
         selectedAccountId = null;
