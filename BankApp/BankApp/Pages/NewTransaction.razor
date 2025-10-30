@@ -63,7 +63,7 @@ else
     /// <summary>
     /// 
     /// </summary>
-    private void DoTransfer()
+    private async Task DoTransfer()
     {
         if (transferModel.FromAccountId == transferModel.ToAccountId)
         {
@@ -97,6 +97,8 @@ else
             $"Överför från {fromAccount.Name}",
             TransactionType.Deposit,
             toAccount.Currency));
+
+            await AccountService.SaveAccountsAsync();
 
         message = $"Överföring lyckades! {transferModel.Amount} {fromAccount.Currency} från {fromAccount.Name} till {toAccount.Name}.";
         transferModel = new TransferModel();
