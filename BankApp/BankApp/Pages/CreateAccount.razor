@@ -1,6 +1,5 @@
 ﻿@page "/CreateAccount"
-@inject BankApp.Interfaces.IAccountService AccountService
-    
+@inject BankApp.Interfaces.IAccountService AccountService 
 @using BankApp.Domain
 @using BankApp.Interfaces
 @using System.ComponentModel.DataAnnotations
@@ -11,32 +10,41 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <div class="mb-2">
-        <label>Kontonamn</label>
-        <InputText @bind-Value="_model.Name" />
-        <ValidationMessage For="@(() => _model.Name)" />
-    </div>
+    <table style="border-collapse: separate; border-spacing: 8px 10px;">
+        <tr>
+            <td><label>Kontonamn</label></td>
+            <td>
+                <InputText @bind-Value="_model.Name" />
+                <ValidationMessage For="@(() => _model.Name)" />
+            </td>
+        </tr>
 
-    <div>
-        <label>Kontotyp</label>
-        <InputSelect @bind-Value="_model.accountType" TValue="AccountType">
-            <option value="">Välj kontotyp!</option>
-            <option value="@AccountType.Deposit">Sparkonto</option>
-            <option value="@AccountType.Savings">Bankkonto</option>
-        </InputSelect>
-    </div>
+        <tr>
+            <td><label>Kontotyp</label></td>
+            <td>
+                <InputSelect @bind-Value="_model.accountType" TValue="AccountType">
+                    <option value="">Välj kontotyp!</option>
+                    <option value="@AccountType.Deposit">Sparkonto</option>
+                    <option value="@AccountType.Savings">Bankkonto</option>
+                </InputSelect>
+            </td>
+        </tr>
 
-    <div>
-        <label>Valuta</label>
-        <InputText @bind-Value="_model.Currency" />
-    </div>
+        <tr>
+            <td><label>Valuta</label></td>
+            <td><InputText @bind-Value="_model.Currency" /></td>
+        </tr>
 
-    <div>
-        <label>Start Saldo</label>
-        <InputNumber @bind-Value="_model.initialBalance" TValue="decimal?" />
-    </div>
+        <tr>
+            <td><label>Startsaldo</label></td>
+            <td><InputNumber @bind-Value="_model.initialBalance" TValue="decimal?" /></td>
+        </tr>
 
-    <button type="submit">Skapa konto</button>
+        <tr>
+            <td></td>
+            <td><button type="submit">Skapa konto</button></td>
+        </tr>
+    </table>
 </EditForm>
 
 <h4>Alla konton</h4>
@@ -47,7 +55,7 @@
 }
 else
 {
-    <ul>
+    <ul class="list-group">
         @foreach (var account in _accounts)
         {
             <li>
@@ -99,6 +107,7 @@ else
         public AccountType accountType { get; set; }
         public string Currency { get; set; } = "SEK";
         public decimal? initialBalance { get; set; } = 0;
+
         /// <summary>
         /// 
         /// </summary>
@@ -111,30 +120,4 @@ else
     }
 }
 
-<style>
-    .transaction-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0 6px;
-        margin-top: 1rem;
-    }
 
-        .transaction-table th {
-            background-color: #f0f0f0;
-            padding: 10px 14px;
-            text-align: left;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .transaction-table td {
-            padding: 10px 14px;
-            background-color: #fff;
-            border-bottom: 1px solid #ddd;
-            white-space: nowrap;
-        }
-
-        .transaction-table tr:hover td {
-            background-color: #f9f9f9;
-        }
-</style>
