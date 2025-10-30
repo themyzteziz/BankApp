@@ -21,6 +21,7 @@
             Date = DateTime.Now;
         }
     }
+
     //
     public enum TransactionType
     {
