@@ -85,7 +85,7 @@ else
         accounts = await AccountService.GetAllAccounts();
     }
     /// <summary>
-    /// 
+    /// Hanterar ändringar i det valda kontot.
     /// </summary>
     /// <param name="e"></param>
     private void OnAccountChanged(ChangeEventArgs e)
@@ -96,7 +96,7 @@ else
         errorMessage = null;
     }
     /// <summary>
-    /// 
+    /// Hanterar tillägg av en ny transaktion.
     /// </summary>
     private async Task AddTransaction()
     {

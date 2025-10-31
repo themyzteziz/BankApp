@@ -1,7 +1,7 @@
 ﻿namespace BankApp.Interfaces
 {
     /// <summary>
-    /// 
+    /// Interface for storage-related operations.
     /// </summary>
     public interface IStorageService
     {

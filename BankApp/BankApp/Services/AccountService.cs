@@ -78,7 +78,7 @@ namespace BankApp.Services
         }
 
         /// <summary>
-        /// 
+        /// Hämtar ett konto baserat på dess unika ID.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -96,7 +96,7 @@ namespace BankApp.Services
         }
 
         /// <summary>
-        /// 
+        /// Hämtar alla konton.
         /// </summary>
         /// <returns></returns>
         public async Task<List<IBankAccount>> GetAllAccounts()
@@ -107,7 +107,7 @@ namespace BankApp.Services
         }
 
         /// <summary>
-        /// 
+        /// Tar bort ett konto baserat på dess unika ID.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -123,12 +123,12 @@ namespace BankApp.Services
             await SaveAsync();
         }
 
-        /// <summary>
-        /// Asynchronously saves the current state of accounts to persistent storage.
-        /// </summary>
-        /// <remarks>This method performs an asynchronous operation to persist account data.  Ensure that
-        /// any changes to account data are complete before calling this method.</remarks>
-        /// <returns>A task that represents the asynchronous save operation.</returns>
+       /// <summary>
+       /// Saves the current list of bank accounts asynchronously to persistent storage.
+       /// </summary>
+       /// <remarks>This method filters the accounts to include only those of type <see
+       /// cref="BankAccount"/> before saving. The accounts are stored using the specified storage service.</remarks>
+       /// <returns>A task that represents the asynchronous save operation.</returns>
         public async Task SaveAccountsAsync()
         {
             await SaveAsync();

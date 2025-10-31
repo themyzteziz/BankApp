@@ -109,7 +109,7 @@ else
     private decimal? maxAmount;
     private string sortBy = "date_desc";
     /// <summary>
-    /// 
+    /// Initierar komponenten och hämtar alla konton.
     /// </summary>
     /// <returns></returns>
     protected override async Task OnInitializedAsync()
@@ -117,7 +117,7 @@ else
         accounts = await AccountService.GetAllAccounts();
     }
     /// <summary>
-    /// 
+    /// Filtrerar kontona baserat på de valda kriterierna.
     /// </summary>
     /// <returns></returns>
     private List<IBankAccount> FilteredAccounts()
@@ -157,7 +157,7 @@ else
         return transactions.ToList();
     }
     ///  <summary>
-    /// 
+    /// Återställ alla filter till sina standardvärden.
     /// </summary>
     private void ResetFilters()
     {
