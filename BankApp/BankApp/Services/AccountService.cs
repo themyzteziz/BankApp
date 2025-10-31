@@ -13,6 +13,7 @@ namespace BankApp.Services
 
         public AccountService(IStorageService storageService)
         {
+            Console.WriteLine("AccountService created.");
             _storageService = storageService;
         }
 
@@ -22,6 +23,7 @@ namespace BankApp.Services
         /// <returns></returns>
         private async Task InitializeAsync()
         {
+            Console.WriteLine("Initializing accounts...");
             if (isLoaded)
                 return;
 
@@ -48,7 +50,7 @@ namespace BankApp.Services
         /// <returns></returns>
         private async Task SaveAsync()
         {
-
+            Console.WriteLine("Saving accounts...");
             var concreteAccounts = _accounts.OfType<BankAccount>().ToList();
             await _storageService.SetItemAsync(StorageKey, concreteAccounts);
         }
@@ -64,6 +66,7 @@ namespace BankApp.Services
         /// <exception cref="InvalidOperationException"></exception>
         public async Task<IBankAccount> CreateAccount(string name, string currency, decimal balance, AccountType accountType)
         {
+            Console.WriteLine($"Creating account '{name}'...");
             await InitializeAsync();
 
 
@@ -85,6 +88,7 @@ namespace BankApp.Services
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task<IBankAccount?> GetAccount(Guid id)
         {
+            Console.WriteLine($"Fetching account {id}...");
             await InitializeAsync();
 
             var account = _accounts.FirstOrDefault(a => a.Id == id);
@@ -93,6 +97,7 @@ namespace BankApp.Services
                 throw new KeyNotFoundException($"Account with id {id} not found.");
 
             return account;
+            
         }
 
         /// <summary>
@@ -101,9 +106,11 @@ namespace BankApp.Services
         /// <returns></returns>
         public async Task<List<IBankAccount>> GetAllAccounts()
         {
+            Console.WriteLine("Fetching all accounts...");
             await InitializeAsync();
 
             return _accounts.ToList();
+            
         }
 
         /// <summary>
@@ -114,6 +121,7 @@ namespace BankApp.Services
         /// <exception cref="KeyNotFoundException"></exception>
         public async Task DeleteAccount(Guid id)
         {
+            Console.WriteLine($"Deleting account {id}...");
             await InitializeAsync();
 
             var acc = _accounts.FirstOrDefault(a => a.Id == id)
@@ -121,6 +129,7 @@ namespace BankApp.Services
 
             _accounts.Remove(acc);
             await SaveAsync();
+            Console.WriteLine($"Account {id} deleted.");
         }
 
        /// <summary>
@@ -131,9 +140,11 @@ namespace BankApp.Services
        /// <returns>A task that represents the asynchronous save operation.</returns>
         public async Task SaveAccountsAsync()
         {
+            Console.WriteLine("Saving accounts...");
             await SaveAsync();
             var concreteAccounts = _accounts.OfType<BankAccount>().ToList();
             await _storageService.SetItemAsync(StorageKey, concreteAccounts);
+            Console.WriteLine("Accounts saved.");
         }
     }
 }
