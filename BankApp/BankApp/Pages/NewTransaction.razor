@@ -15,32 +15,44 @@ else
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <div class="mb-2">
-            <label>Från konto:</label>
-            <InputSelect @bind-Value="transferModel.FromAccountId">
-                <option value="">Välj konto</option>
-                @foreach (var acc in accounts)
-                {
-                    <option value="@acc.Id">@acc.Name (@acc.Currency)</option>
-                }
-            </InputSelect>
-        </div>
+        <table style="border-collapse: separate; border-spacing: 8px 10px;">
+            <tr>
+                <td>
+                    <label>Från konto:</label>
+                    <InputSelect @bind-Value="transferModel.FromAccountId">
+                        <option value="">Välj konto</option>
+                        @foreach (var acc in accounts)
+                        {
+                            <option value="@acc.Id">@acc.Name (@acc.Currency)</option>
+                        }
+                    </InputSelect>
+                </td>
+            </tr>
+        </table>
 
-        <div class="mb-2">
-            <label>Till konto:</label>
-            <InputSelect @bind-Value="transferModel.ToAccountId">
-                <option value="">Byt konto</option>
-                @foreach (var acc in accounts)
-                {
-                    <option value="@acc.Id">@acc.Name (@acc.Currency)</option>
-                }
-            </InputSelect>
-        </div>
+        <table style="border-collapse: separate; border-spacing: 8px 10px;">
+            <tr>
+                <td>
+                    <label>Till konto:</label>
+                    <InputSelect @bind-Value="transferModel.ToAccountId">
+                        <option value="">Byt konto</option>
+                        @foreach (var acc in accounts)
+                        {
+                            <option value="@acc.Id">@acc.Name (@acc.Currency)</option>
+                        }
+                    </InputSelect>
+                </td>
+            </tr>
+        </table>
 
-        <div class="mb-2">
-            <label>Belopp:</label>
-            <InputNumber @bind-Value="transferModel.Amount" TValue="decimal" />
-        </div>
+        <table style="border-collapse: separate; border-spacing: 8px 10px;">    
+            <tr>
+                <td>
+                    <label>Belopp:</label>
+                    <InputNumber @bind-Value="transferModel.Amount" TValue="decimal" />
+                </td>
+            </tr>
+        </table>
 
         <button type="submit">Överför</button>
     </EditForm>
@@ -60,6 +72,7 @@ else
     {
         accounts = await AccountService.GetAllAccounts();
     }
+
     /// <summary>
     /// 
     /// </summary>

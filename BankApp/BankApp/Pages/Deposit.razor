@@ -11,16 +11,20 @@
 }
 else
 {
-    <div class="mb-3">
+    <table style="border-collapse: separate; border-spacing: 8px 10px;">
         <label>Välj konto:</label>
-        <select @onchange="OnAccountChanged">
-            <option value="">Välj konto</option>
-            @foreach (var acc in accounts)
-            {
-                <option value="@acc.Name">@acc.Name (@acc.Currency)</option>
-            }
-        </select>
-    </div>
+        <tr>
+            <td>
+                <select @onchange="OnAccountChanged">
+                    <option value="">Välj konto</option>
+                    @foreach (var acc in accounts)
+                    {
+                        <option value="@acc.Name">@acc.Name (@acc.Currency)</option>
+                    }
+                </select>
+            </td>
+        </tr>
+    </table>
 
     @if (selectedAccount is not null)
     {
@@ -28,23 +32,29 @@ else
             <DataAnnotationsValidator />
             <ValidationSummary />
 
-            <div>
-                <label>Belopp:</label>
-                <InputNumber @bind-Value="transactionModel.Amount" TValue="decimal" />
-            </div>
-
-            <div>
-                <label>Beskrivning:</label>
-                <InputText @bind-Value="transactionModel.Description" />
-            </div>
-
-            <div>
-                <label>Typ:</label>
-                <InputSelect @bind-Value="transactionModel.Type">
-                    <option value="@TransactionType.Deposit">Insättning</option>
-                    <option value="@TransactionType.Withdrawal">Uttag</option>
-                </InputSelect>
-            </div>
+            <table>
+                <tr>
+                    <td>
+                        <label>Belopp:</label>
+                        <InputNumber @bind-Value="transactionModel.Amount" TValue="decimal" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Beskrivning:</label>
+                        <InputText @bind-Value="transactionModel.Description" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Typ:</label>
+                        <InputSelect @bind-Value="transactionModel.Type">
+                            <option value="@TransactionType.Deposit">Insättning</option>
+                            <option value="@TransactionType.Withdrawal">Uttag</option>
+                        </InputSelect>
+                    </td>
+                </tr>
+            </table>
 
             <button type="submit">Utför</button>
         </EditForm>
