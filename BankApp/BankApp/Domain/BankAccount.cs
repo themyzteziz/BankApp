@@ -88,6 +88,8 @@ namespace BankApp.Domain
             transaction.BalanceAfterTransaction = Balance;
 
             LastUpdated = DateTime.Now;
+
+            Console.WriteLine($"[Bank] {Name}: {transaction.Type} of {transaction.Amount} {Currency} → New balance: {Balance} {Currency}");
         }
     }
 }
