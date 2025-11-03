@@ -16,6 +16,7 @@ else if (accounts.Count == 0)
 }
 else
 {
+    // Display list of all user accounts.
     <ul class="list-group">
         @foreach (var acc in accounts)
         {
@@ -24,6 +25,7 @@ else
                 Saldo: @acc.Balance @acc.Currency<br />
                 <small>Senast uppdaterad: @acc.LastUpdated.ToLocalTime()</small>
             </li>
+            // If account balance is zero, allow deletion.
                @if (acc.Balance == 0m)
                 {
                     <button class="btn btn-sm btn-danger"
@@ -31,6 +33,7 @@ else
                         Ta bort konto
                     </button>
                 }
+            // Otherwise, disable the delete button.
                 else
                 {
                     <button class="btn btn-sm btn-secondary" disabled title="Saldo måste vara 0">
@@ -43,12 +46,15 @@ else
 }
 
 @code {
+    // List holding all accounts retrieved from the service.
     private List<IBankAccount>? accounts;
 
     protected override async Task OnInitializedAsync()
     {
         accounts = await AccountService.GetAllAccounts();
     }
+
+    // Removes an account by its ID, then refreshes the list.
     private async Task RemoveAccount(Guid id)
     {
         
