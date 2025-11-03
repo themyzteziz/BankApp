@@ -1,5 +1,5 @@
 ﻿@page "/CreateAccount"
-@inject BankApp.Interfaces.IAccountService AccountService 
+@inject BankApp.Interfaces.IAccountService AccountService
 @using BankApp.Domain
 @using BankApp.Interfaces
 @using System.ComponentModel.DataAnnotations
@@ -55,21 +55,19 @@
 }
 else
 {
-    
     <ul class="list-group">
         <table style="border-collapse: separate; border-spacing: 8px 10px;">
-        @foreach (var account in _accounts)
-        {
-            <tr>
+            @foreach (var account in _accounts)
+            {
+                <tr>
             <li>
                 <strong>@account.AccountType - @account.Balance - @account.Name</strong>
                 @* <small>(uppdaterad @account.LastUpdated.ToLocalTime())</small> *@
             </li>
-			</tr>
+            </tr>
         }
-	</table>
+        </table>
     </ul>
-    
 }
 
 @code {
@@ -82,7 +80,7 @@ else
     }
 
     /// <summary>
-    /// Hanterar skapandet av ett nytt konto.
+    /// Handles the creation of a new account.
     /// </summary>
     /// <returns></returns>
     private async Task CreateAccountAsync()
@@ -115,7 +113,7 @@ else
         public decimal? initialBalance { get; set; } = 0;
 
         /// <summary>
-        /// Återställer modellen till sina standardvärden.
+        /// Resets the model to its default values.
         /// </summary>
         public void Clear()
         {
@@ -125,5 +123,3 @@ else
         }
     }
 }
-
-

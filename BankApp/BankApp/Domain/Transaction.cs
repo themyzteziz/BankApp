@@ -1,5 +1,6 @@
 ﻿namespace BankApp.Domain
 {
+    // Represents a single financial transaction made on a bank account.
     public class Transaction
     {
         public Guid Id { get; private set; } = Guid.NewGuid();
@@ -22,7 +23,7 @@
         }
     }
 
-    //
+    // Defines the possible types of financial transactions.
     public enum TransactionType
     {
         Deposit,

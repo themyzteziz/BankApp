@@ -13,9 +13,9 @@ namespace BankApp.Domain
 
         private readonly List<Transaction> _transactions = new();
         public IReadOnlyList<Transaction> Transactions => _transactions;
-        
+
         public BankAccount() { }
-        
+
         public BankAccount(string name, string currency, decimal balance, AccountType accountType)
         {
             Name = name;
@@ -23,9 +23,8 @@ namespace BankApp.Domain
             Balance = balance;
             LastUpdated = DateTime.Now;
             AccountType = accountType;
-            
         }
-        
+
         [JsonConstructor]
         public BankAccount(Guid id, string name, string currency, decimal balance, DateTime lastUpdated, AccountType accountType, IReadOnlyList<Transaction>? transactions = null)
         {
@@ -34,28 +33,30 @@ namespace BankApp.Domain
             Currency = currency;
             Balance = balance;
             LastUpdated = lastUpdated;
-            AccountType = accountType;           
+            AccountType = accountType;
 
             if (transactions is not null)
                 _transactions = transactions.ToList();
         }
+
         /// <summary>
-        /// 
+        /// Deposits the specified amount into the account.
         /// </summary>
-        /// <param name="amount"></param>
-        /// <exception cref="ArgumentException"></exception>
+        /// <param name="amount">The amount to deposit. Must be greater than zero.</param>
+        /// <exception cref="ArgumentException">Thrown if the amount is less than or equal to zero.</exception>
         public void Deposit(decimal amount)
         {
             if (amount <= 0) throw new ArgumentException("Amount must be positive");
             Balance += amount;
             LastUpdated = DateTime.Now;
         }
+
         /// <summary>
-        /// 
+        /// Withdraws the specified amount from the account.
         /// </summary>
-        /// <param name="amount"></param>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
+        /// <param name="amount">The amount to withdraw. Must be greater than zero and less than or equal to the current balance.</param>
+        /// <exception cref="ArgumentException">Thrown if the amount is less than or equal to zero.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the balance is insufficient.</exception>
         public void Withdraw(decimal amount)
         {
             if (amount <= 0) throw new ArgumentException("Amount must be positive");
@@ -63,11 +64,12 @@ namespace BankApp.Domain
             Balance -= amount;
             LastUpdated = DateTime.Now;
         }
+
         /// <summary>
-        /// 
+        /// Adds a transaction to the account and updates the balance accordingly.
         /// </summary>
-        /// <param name="transaction"></param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="transaction">The transaction to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the transaction is null.</exception>
         public void AddTransaction(Transaction transaction)
         {
             if (transaction is null) throw new ArgumentNullException(nameof(transaction));
@@ -83,7 +85,7 @@ namespace BankApp.Domain
                 TransactionType.Transfer => 0,
                 _ => 0m
             };
-            transaction.BalanceAfterTransaction = Balance;                     
+            transaction.BalanceAfterTransaction = Balance;
 
             LastUpdated = DateTime.Now;
         }

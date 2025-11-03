@@ -108,16 +108,18 @@ else
     private decimal? minAmount;
     private decimal? maxAmount;
     private string sortBy = "date_desc";
+
     /// <summary>
-    /// Initierar komponenten och hämtar alla konton.
+    /// Initializes the component and retrieves all accounts.
     /// </summary>
     /// <returns></returns>
     protected override async Task OnInitializedAsync()
     {
         accounts = await AccountService.GetAllAccounts();
     }
+
     /// <summary>
-    /// Filtrerar kontona baserat på de valda kriterierna.
+    /// Filters the accounts based on the selected criteria.
     /// </summary>
     /// <returns></returns>
     private List<IBankAccount> FilteredAccounts()
@@ -126,6 +128,7 @@ else
             return accounts;
         return accounts.Where(a => a.Id.ToString() == selectedAccountId).ToList();
     }
+
     //
     private List<Transaction> FilteredTransactions(IBankAccount acc)
     {
@@ -156,8 +159,9 @@ else
 
         return transactions.ToList();
     }
-    ///  <summary>
-    /// Återställ alla filter till sina standardvärden.
+
+    /// <summary>
+    /// Resets all filters to their default values.
     /// </summary>
     private void ResetFilters()
     {
@@ -173,29 +177,29 @@ else
 }
 
 <style>
-.transaction-table {
-    width: 100%;
-    border-collapse: separate;   
-    border-spacing: 0 6px;       
-    margin-top: 1rem;
-}
+    .transaction-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 6px;
+        margin-top: 1rem;
+    }
 
-.transaction-table th {
-    background-color: #f0f0f0;
-    padding: 10px 14px;          
-    text-align: left;
-    font-weight: 600;
-    white-space: nowrap;         
-}
+        .transaction-table th {
+            background-color: #f0f0f0;
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
 
-.transaction-table td {
-    padding: 10px 14px;          
-    background-color: #fff;
-    border-bottom: 1px solid #ddd;
-    white-space: nowrap;
-}
+        .transaction-table td {
+            padding: 10px 14px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            white-space: nowrap;
+        }
 
-.transaction-table tr:hover td {
-    background-color: #f9f9f9;
-}
+        .transaction-table tr:hover td {
+            background-color: #f9f9f9;
+        }
 </style>

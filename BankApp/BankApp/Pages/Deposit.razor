@@ -84,10 +84,11 @@ else
     {
         accounts = await AccountService.GetAllAccounts();
     }
+
     /// <summary>
-    /// Hanterar ändringar i det valda kontot.
+    /// Handles changes to the selected account.
     /// </summary>
-    /// <param name="e"></param>
+    /// <param name="e">The change event containing the selected account value.</param>
     private void OnAccountChanged(ChangeEventArgs e)
     {
         var selectedName = e.Value?.ToString();
@@ -95,8 +96,9 @@ else
         transactionModel = new();
         errorMessage = null;
     }
+
     /// <summary>
-    /// Hanterar tillägg av en ny transaktion.
+    /// Handles the addition of a new transaction to the selected account.
     /// </summary>
     private async Task AddTransaction()
     {
@@ -122,7 +124,6 @@ else
 
             await AccountService.SaveAccountsAsync();
         }
-
         catch (Exception ex)
         {
             errorMessage = ex.Message;

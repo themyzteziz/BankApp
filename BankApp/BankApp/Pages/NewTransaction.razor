@@ -45,7 +45,7 @@ else
             </tr>
         </table>
 
-        <table style="border-collapse: separate; border-spacing: 8px 10px;">    
+        <table style="border-collapse: separate; border-spacing: 8px 10px;">
             <tr>
                 <td>
                     <label>Belopp:</label>
@@ -74,7 +74,7 @@ else
     }
 
     /// <summary>
-    ///  Genomför en överföring mellan två konton.
+    /// Performs a transfer between two accounts.
     /// </summary>
     private async Task DoTransfer()
     {
@@ -98,7 +98,7 @@ else
             message = "Ogiltigt överföringsbelopp.";
             return;
         }
-                
+
         fromAccount.AddTransaction(new Transaction(
             transferModel.Amount,
             $"Överför till {toAccount.Name}",
@@ -111,7 +111,7 @@ else
             TransactionType.Deposit,
             toAccount.Currency));
 
-            await AccountService.SaveAccountsAsync();
+        await AccountService.SaveAccountsAsync();
 
         message = $"Överföring lyckades! {transferModel.Amount} {fromAccount.Currency} från {fromAccount.Name} till {toAccount.Name}.";
         transferModel = new TransferModel();
