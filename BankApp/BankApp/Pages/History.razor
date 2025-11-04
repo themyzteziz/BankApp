@@ -129,7 +129,11 @@ else
         return accounts.Where(a => a.Id.ToString() == selectedAccountId).ToList();
     }
 
-    //
+    ///  <summary>
+    /// Filters the transactions of a given account based on the selected criteria.
+    /// </summary>
+    /// <param name="acc"></param>
+    /// <returns></returns>
     private List<Transaction> FilteredTransactions(IBankAccount acc)
     {
         var transactions = acc.Transactions.AsEnumerable();

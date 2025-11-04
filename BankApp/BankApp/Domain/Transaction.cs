@@ -4,7 +4,6 @@
     public class Transaction
     {
         public Guid Id { get; private set; } = Guid.NewGuid();
-
         public DateTime Date { get; private set; } = DateTime.Now;
         public decimal Amount { get; private set; }
         public string Description { get; private set; } = string.Empty;
