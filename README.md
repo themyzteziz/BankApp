@@ -91,7 +91,7 @@ Git pull // You can use this to pull my code to your software but you need git i
 
 For switching between my branch and main
 Git checkout main
-Git checkout featureaccoutn
+Git checkout featureaccount
 
 Merging my branch to my main
 Git merge featureaccount
