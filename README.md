@@ -54,3 +54,42 @@ Now you can see your accounts, you can also remove the accounts by pressing remo
 
 How is data saved?
 Data is saved by using LocalStorage which means its only saved locally and when you open the page again the data will still be there. 
+
+Domain/
+BankAccount.cs   // Represents a bank account
+Transaction.cs  // Represents a transaction
+
+Interfaces/
+IAccountService.cs  // Account service contract
+IStorageService.cs // Storage contract
+
+Services/
+AccountService.cs   // Logic for accounts and saving data
+StorageService.cs  // Talks to LocalStorage
+
+Pages/
+Accounts.razor       // Create and show accounts
+Deposit.razor       // Deposit and withdraw page
+Transaction.razor  // Transfer money page
+History.razor     // View history page
+
+Using Console.WriteLine inside AccountService for important actions like:
+When account is created
+When money is deposited or withdrawn
+When a transfer happens
+
+Git commands i have been using:
+For pushing code to Github
+Git add .
+Git commit -m "Write changes"
+Git push
+
+For pulling code between my laptop and computer
+Git pull // You can use this to pull my code to your software but you need git installed on your computer 
+
+For switching between my branch and main
+Git checkout main
+Git checkout featureaccoutn
+
+Merging my branch to my main
+Git merge featureaccount
