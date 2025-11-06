@@ -95,3 +95,7 @@ Git checkout featureaccount
 
 Merging my branch to my main
 Git merge featureaccount
+
+## 💡VG addition
+Savings accounts automatically earn 2% interest per month based on their current balance and also button to demonstrate 2% increase.
+I added this feature to simulate how real savings accounts work, and to make the application feel more realistic and useful. I created method in AccountService and IAccountService and implemented it in Accounts.Razor.
