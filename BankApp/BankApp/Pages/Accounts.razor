@@ -5,7 +5,8 @@
 @using BankApp.Interfaces
 
 <h3>Mina konton</h3>
-
+	Skapa nytt konto
+<button @onclick="() => ApplyInterest(0.02m)">Lägg på månadsränta (2%)</button>
 @if (accounts is null)
 {
     <p>Laddar konton...</p>
@@ -40,7 +41,6 @@ else
                         Kan inte ta bort
                     </button>
                 }
-            
         }
     </ul>
 }
@@ -57,8 +57,16 @@ else
     // Removes an account by its ID, then refreshes the list.
     private async Task RemoveAccount(Guid id)
     {
-        
+
         await AccountService.DeleteAccount(id);          
+        accounts = await AccountService.GetAllAccounts(); 
+        StateHasChanged();
+    }
+
+	// Applies interest to all accounts and refreshes the list.
+    private async Task ApplyInterest(decimal annualRate)
+    {
+        await AccountService.ApplyInterestAsync(annualRate);
         accounts = await AccountService.GetAllAccounts(); 
         StateHasChanged();
     }

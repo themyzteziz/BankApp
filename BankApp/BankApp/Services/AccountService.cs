@@ -25,7 +25,7 @@ namespace BankApp.Services
         {
             if (isLoaded)
                 return;
-            
+
             var fromStorage = await _storageService.GetItemAsync<List<BankAccount>>(StorageKey);
             _accounts.Clear();
             if (fromStorage != null && fromStorage.Count > 0)
@@ -35,7 +35,7 @@ namespace BankApp.Services
                     if (!_accounts.Any(a => a.Id == account.Id))
                         _accounts.Add(account);
                 }
-            }            
+            }
             isLoaded = true;
             Console.WriteLine($"[Bank] Loaded {_accounts.Count} account(s) from local storage.");
         }
@@ -46,10 +46,10 @@ namespace BankApp.Services
         /// <returns>A task that represents the asynchronous save operation.</returns>
         private async Task SaveAsync()
         {
-            
+
             var concreteAccounts = _accounts.OfType<BankAccount>().ToList();
             await _storageService.SetItemAsync(StorageKey, concreteAccounts);
-            
+
         }
 
         /// <summary>
@@ -63,14 +63,14 @@ namespace BankApp.Services
         /// <exception cref="InvalidOperationException">Thrown when an account with the same name already exists.</exception>
         public async Task<IBankAccount> CreateAccount(string name, string currency, decimal balance, AccountType accountType)
         {
-            
+
             await InitializeAsync();
 
             if (_accounts.Any(a => a.Name == name))
                 throw new InvalidOperationException($"An account with the name '{name}' already exists.");
 
             var account = new BankAccount(name, currency, balance, accountType);
-            _accounts.Add(account);         
+            _accounts.Add(account);
             await SaveAsync();
 
             Console.WriteLine($"Created account: {name} ({accountType}) | ID={account.Id} | Start balance: {balance} {currency}");
@@ -84,7 +84,7 @@ namespace BankApp.Services
         /// <returns>The matching <see cref="IBankAccount"/> if found.</returns>
         /// <exception cref="KeyNotFoundException">Thrown when no account is found with the specified ID.</exception>
         public async Task<IBankAccount?> GetAccount(Guid id)
-        {            
+        {
             await InitializeAsync();
 
             var account = _accounts.FirstOrDefault(a => a.Id == id);
@@ -113,7 +113,7 @@ namespace BankApp.Services
         /// <returns>A task that represents the asynchronous delete operation.</returns>
         /// <exception cref="KeyNotFoundException">Thrown when no account is found with the specified ID.</exception>
         public async Task DeleteAccount(Guid id)
-        {         
+        {
             await InitializeAsync();
             var acc = _accounts.FirstOrDefault(a => a.Id == id)
                       ?? throw new KeyNotFoundException($"Account {id} not found.");
@@ -137,6 +137,33 @@ namespace BankApp.Services
             var concreteAccounts = _accounts.OfType<BankAccount>().ToList();
             await _storageService.SetItemAsync(StorageKey, concreteAccounts);
             Console.WriteLine("Accounts saved.");
+        }
+
+        /// <summary>
+        /// Applies monthly interest to all savings accounts based on the specified annual interest rate.
+        /// </summary>
+        /// <param name="annualRatePercent">The annual interest rate, expressed as a percentage. Must be greater than zero.</param>
+        /// <returns>A task that represents the asynchronous operation of applying interest to savings accounts.</returns>
+        public async Task ApplyInterestAsync(decimal annualRatePercent)
+        {
+            await InitializeAsync();
+            var savingsAccounts = _accounts
+                .OfType<BankAccount>()
+                .Where(a => a.AccountType == AccountType.Savings)
+                .ToList();
+            if (annualRatePercent <= 0)
+            {
+                Console.WriteLine("[Bank] Interest rate must be positive.");
+                return;
+            }
+            foreach (var account in savingsAccounts)
+            {
+                var monthlyRate = annualRatePercent / 12 / 100;
+                var interest = account.Balance * monthlyRate;
+                account.Deposit(interest);
+                Console.WriteLine($"[Bank] Applied {interest:F2} {account.Currency} interest to account '{account.Name}' (New balance: {account.Balance:F2} {account.Currency})");
+            }
+            await SaveAsync();
         }
     }
 }
