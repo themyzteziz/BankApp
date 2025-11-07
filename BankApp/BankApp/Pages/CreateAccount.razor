@@ -4,7 +4,7 @@
 @using BankApp.Interfaces
 @using System.ComponentModel.DataAnnotations
 
-<h3>Vänligen Skapa ett konto</h3>
+<h3>Please create an account</h3>
 
 <EditForm Model="_model" OnValidSubmit="CreateAccountAsync">
     <DataAnnotationsValidator />
@@ -12,7 +12,7 @@
 
     <table style="border-collapse: separate; border-spacing: 8px 10px;">
         <tr>
-            <td><label>Kontonamn</label></td>
+            <td><label>Account Name</label></td>
             <td>
                 <InputText @bind-Value="_model.Name" />
                 <ValidationMessage For="@(() => _model.Name)" />
@@ -20,38 +20,38 @@
         </tr>
 
         <tr>
-            <td><label>Kontotyp</label></td>
+            <td><label>Account Type</label></td>
             <td>
                 <InputSelect @bind-Value="_model.accountType" TValue="AccountType">
-                    <option value="">Välj kontotyp!</option>
-                    <option value="@AccountType.Deposit">Sparkonto</option>
-                    <option value="@AccountType.Savings">Bankkonto</option>
+                    <option value="">Select account type!</option>
+                    <option value="@AccountType.Deposit">Savings Account</option>
+                    <option value="@AccountType.Savings">Bank Account</option>
                 </InputSelect>
             </td>
         </tr>
 
         <tr>
-            <td><label>Valuta</label></td>
+            <td><label>Currency</label></td>
             <td><InputText @bind-Value="_model.Currency" /></td>
         </tr>
 
         <tr>
-            <td><label>Startsaldo</label></td>
+            <td><label>Initial Balance</label></td>
             <td><InputNumber @bind-Value="_model.initialBalance" TValue="decimal?" /></td>
         </tr>
 
         <tr>
             <td></td>
-            <td><button type="submit">Skapa konto</button></td>
+            <td><button type="submit">Create Account</button></td>
         </tr>
     </table>
 </EditForm>
 
-<h4>Alla konton</h4>
+<h4>All Accounts</h4>
 
 @if (_accounts.Count == 0)
 {
-    <p>Inga konton skapade än. Skapa konto ovan!</p>
+    <p>No accounts created yet. Create an account above!</p>
 }
 else
 {
@@ -96,7 +96,6 @@ else
 
             _accounts = await AccountService.GetAllAccounts();
             _model.Clear();
-            StateHasChanged();
         }
         catch (Exception exception)
         {
@@ -106,7 +105,6 @@ else
 
     private class CreateAccountModel
     {
-        [Required(ErrorMessage = "Kontonamn krävs")]
         public string? Name { get; set; } = string.Empty;
         public AccountType accountType { get; set; }
         public string Currency { get; set; } = "SEK";

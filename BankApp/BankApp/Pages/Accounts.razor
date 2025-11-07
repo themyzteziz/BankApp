@@ -4,16 +4,15 @@
 @using BankApp.Domain
 @using BankApp.Interfaces
 
-<h3>Mina konton</h3>
-	Skapa nytt konto
-<button @onclick="() => ApplyInterest(0.02m)">Lägg på månadsränta (2%)</button>
+<h3>My Accounts</h3>
+
 @if (accounts is null)
 {
-    <p>Laddar konton...</p>
+    <p>Loading accounts...</p>
 }
 else if (accounts.Count == 0)
 {
-    <p>Inga konton hittades. Skapa ett konto först!</p>
+    <p>No accounts found. Please create an account first!</p>
 }
 else
 {
@@ -23,22 +22,22 @@ else
         {
             <li class="list-group-item">
                 <strong>@acc.Name</strong> — @acc.AccountType<br />
-                Saldo: @acc.Balance @acc.Currency<br />
-                <small>Senast uppdaterad: @acc.LastUpdated.ToLocalTime()</small>
+                Balance: @acc.Balance @acc.Currency<br />
+                <small>Last updated: @acc.LastUpdated.ToLocalTime()</small>
             </li>
             // If account balance is zero, allow deletion.
                @if (acc.Balance == 0m)
                 {
                     <button class="btn btn-sm btn-danger"
                             @onclick="async () => await RemoveAccount(acc.Id)">
-                        Ta bort konto
+                        Remove Account
                     </button>
                 }
             // Otherwise, disable the delete button.
                 else
                 {
-                    <button class="btn btn-sm btn-secondary" disabled title="Saldo måste vara 0">
-                        Kan inte ta bort
+                    <button class="btn btn-sm btn-secondary" disabled title="Balance must be 0">
+                        Cannot Remove
                     </button>
                 }
         }
@@ -60,14 +59,12 @@ else
 
         await AccountService.DeleteAccount(id);          
         accounts = await AccountService.GetAllAccounts(); 
-        StateHasChanged();
     }
 
 	// Applies interest to all accounts and refreshes the list.
     private async Task ApplyInterest(decimal annualRate)
     {
-        await AccountService.ApplyInterestAsync(annualRate);
+        await AccountService.ApplyMonthlyInterestAsync(annualRate);
         accounts = await AccountService.GetAllAccounts(); 
-        StateHasChanged();
     }
 }

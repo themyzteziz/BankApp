@@ -7,7 +7,7 @@
 
 @if (accounts.Count < 2)
 {
-    <p>Du behöver minst två konton för att göra en överföring.</p>
+    <p>You need at least two accounts to make a transfer.</p>
 }
 else
 {
@@ -18,9 +18,9 @@ else
         <table style="border-collapse: separate; border-spacing: 8px 10px;">
             <tr>
                 <td>
-                    <label>Från konto:</label>
+                    <label>From account:</label>
                     <InputSelect @bind-Value="transferModel.FromAccountId">
-                        <option value="">Välj konto</option>
+                        <option value="">Select account</option>
                         @foreach (var acc in accounts)
                         {
                             <option value="@acc.Id">@acc.Name (@acc.Currency)</option>
@@ -33,9 +33,9 @@ else
         <table style="border-collapse: separate; border-spacing: 8px 10px;">
             <tr>
                 <td>
-                    <label>Till konto:</label>
+                    <label>To account:</label>
                     <InputSelect @bind-Value="transferModel.ToAccountId">
-                        <option value="">Byt konto</option>
+                        <option value="">Select account</option>
                         @foreach (var acc in accounts)
                         {
                             <option value="@acc.Id">@acc.Name (@acc.Currency)</option>
@@ -48,13 +48,26 @@ else
         <table style="border-collapse: separate; border-spacing: 8px 10px;">
             <tr>
                 <td>
-                    <label>Belopp:</label>
+                    <label>Amount:</label>
                     <InputNumber @bind-Value="transferModel.Amount" TValue="decimal" />
                 </td>
             </tr>
         </table>
 
-        <button type="submit">Överför</button>
+        <table style="border-collapse: separate; border-spacing: 8px 10px;">
+            <tr>
+                <td>
+                    <label>Category:</label>
+                    <InputSelect @bind-Value="transferModel.Category">
+                        <option value="Food">Food</option>
+                        <option value="Rent">Rent</option>
+                        <option value="Transport">Transport</option>
+                    </InputSelect>
+                </td>
+            </tr>
+        </table>
+
+        <button type="submit">Transfer</button>
     </EditForm>
 
     @if (!string.IsNullOrEmpty(message))
@@ -80,7 +93,7 @@ else
     {
         if (transferModel.FromAccountId == transferModel.ToAccountId)
         {
-            message = "Du kan inte överföra till samma konto.";
+            message = "You cannot transfer to the same account.";
             return;
         }
 
@@ -89,31 +102,37 @@ else
 
         if (fromAccount is null || toAccount is null)
         {
-            message = "Inga konton valda.";
+            message = "No accounts selected.";
             return;
         }
 
         if (transferModel.Amount <= 0 || transferModel.Amount > fromAccount.Balance)
         {
-            message = "Ogiltigt överföringsbelopp.";
+            message = "Invalid transfer amount.";
             return;
         }
 
         fromAccount.AddTransaction(new Transaction(
             transferModel.Amount,
-            $"Överför till {toAccount.Name}",
+            $"Transfer to {toAccount.Name} [{transferModel.Category}]",
             TransactionType.Withdrawal,
-            fromAccount.Currency));
+            fromAccount.Currency)
+        {
+            Category = transferModel.Category
+        });
 
         toAccount.AddTransaction(new Transaction(
             transferModel.Amount,
-            $"Överför från {fromAccount.Name}",
+            $"Transfer from {fromAccount.Name} [{transferModel.Category}]",
             TransactionType.Deposit,
-            toAccount.Currency));
+            toAccount.Currency)
+        {
+            Category = transferModel.Category
+        });
 
         await AccountService.SaveAccountsAsync();
 
-        message = $"Överföring lyckades! {transferModel.Amount} {fromAccount.Currency} från {fromAccount.Name} till {toAccount.Name}.";
+        message = $"Transfer successful! {transferModel.Amount} {fromAccount.Currency} from {fromAccount.Name} to {toAccount.Name}.";
         transferModel = new TransferModel();
     }
 
@@ -122,5 +141,6 @@ else
         public Guid FromAccountId { get; set; }
         public Guid ToAccountId { get; set; }
         public decimal Amount { get; set; }
+        public string Category { get; set; } = "";
     }
 }

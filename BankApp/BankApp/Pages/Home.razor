@@ -2,11 +2,11 @@
 
 @if (locked)
 {
-    <h3>Ange PIN</h3>
+    <h3>Enter PIN</h3>
 
     <input @bind="pin" type="password" />
 
-    <button @onclick="CheckPin">Lås upp</button>
+    <button @onclick="CheckPin">Unlock</button>
 
     @if (errorMessage is not null)
     {
@@ -16,16 +16,16 @@
 else
 {
     <h2>MS Bank</h2>
-    <p>Välkommen här kan du skapa konton, göra överföringar, se dina konton, göra insättningar och uttag och se din historik </p>
+    <p>Welcome! Here you can create accounts, make transfers, view your accounts, make deposits and withdrawals, and see your history.</p>
 
-    <button @onclick="Locked">Lås</button>
+    <button @onclick="Locked">Lock</button>
 }
 
 @code {
 
     bool locked = true;
     string pin = "";
-    string correctPin = "1234";
+    string correctPin = "1234"; // Correct PIN code
     string? errorMessage;
 
     /// <summary>
@@ -40,7 +40,7 @@ else
         }
         else
         {
-            errorMessage = "Fel PIN.";
+            errorMessage = "Incorrect PIN.";
             pin = "";
         }
     }

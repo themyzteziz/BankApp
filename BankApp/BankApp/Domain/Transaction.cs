@@ -10,7 +10,8 @@
         public string Currency { get; private set; } = "SEK";
         public TransactionType Type { get; private set; }
         public Guid TransferReciever { get; set; } = Guid.Empty;
-        public decimal BalanceAfterTransaction { get; set; }    
+        public decimal BalanceAfterTransaction { get; set; }
+        public string Category { get; set; } = "Uncategorized";
 
         public Transaction(decimal amount, string description, TransactionType type, string currency)
         {

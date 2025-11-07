@@ -2,38 +2,38 @@
 @inject BankApp.Interfaces.IAccountService AccountService
 @using BankApp.Domain
 @using BankApp.Interfaces
-<h3>Historik</h3>
+<h3>History</h3>
 
 @if (accounts == null || accounts.Count == 0)
 {
-    <p>Inga konton hittades. Skapa ett konto först!</p>
+    <p>No accounts found. Please create an account first!</p>
 }
 else
 {
     <div class="filter-bar">
 
-        <label>Konto:</label>
+        <label>Account:</label>
         <select @bind="selectedAccountId" @bind:event="onchange">
-            <option value="">Alla konton</option>
+            <option value="">All accounts</option>
             @foreach (var acc in accounts)
             {
                 <option value="@acc.Id">@acc.Name (@acc.Currency)</option>
             }
         </select>
 
-        <label>Typ:</label>
+        <label>Type:</label>
         <select @bind="selectedType" @bind:event="onchange">
-            <option value="">Alla typer</option>
+            <option value="">All types</option>
             @foreach (var type in Enum.GetValues<TransactionType>())
             {
                 <option value="@type">@type</option>
             }
         </select>
 
-        <label>Från:</label>
+        <label>From:</label>
         <input type="date" @bind="fromDate" @bind:event="onchange" />
 
-        <label>Till:</label>
+        <label>To:</label>
         <input type="date" @bind="toDate" @bind:event="onchange" />
 
         <label>Min:</label>
@@ -42,15 +42,15 @@ else
         <label>Max:</label>
         <input type="number" @bind="maxAmount" @bind:event="onchange" />
 
-        <label>Sortering:</label>
+        <label>Sorting:</label>
         <select @bind="sortBy" @bind:event="onchange">
-            <option value="date_desc">Datum (Nyast)</option>
-            <option value="date_asc">Datum (Äldst)</option>
-            <option value="amount_desc">Belopp (Störst)</option>
-            <option value="amount_asc">Belopp (Minst)</option>
+            <option value="date_desc">Date (Newest)</option>
+            <option value="date_asc">Date (Oldest)</option>
+            <option value="amount_desc">Amount (Largest)</option>
+            <option value="amount_asc">Amount (Smallest)</option>
         </select>
 
-        <button class="reset-btn" @onclick="ResetFilters">Återställ</button>
+        <button class="reset-btn" @onclick="ResetFilters">Reset</button>
     </div>
 
     <div class="account-container">
@@ -58,24 +58,24 @@ else
         {
             <div class="account-section">
                 <h4>@acc.Name — @acc.AccountType</h4>
-                <p><strong>Saldo:</strong> @acc.Balance @acc.Currency</p>
+                <p><strong>Balance:</strong> @acc.Balance @acc.Currency</p>
 
                 <table class="transaction-table">
                     <thead>
                         <tr>
-                            <th>Från</th>
-                            <th>Typ</th>
-                            <th>Beskrivning</th>
-                            <th>Belopp</th>
-                            <th>Datum</th>
-                            <th>Saldo efter</th>
+                            <th>From</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Balance after</th>
                         </tr>
                     </thead>
                     <tbody>
                         @if (FilteredTransactions(acc).Count == 0)
                         {
                             <tr>
-                                <td colspan="6" style="text-align:center; opacity:0.7;">Inga transaktioner matchar filtren</td>
+                                <td colspan="6" style="text-align:center; opacity:0.7;">No transactions match the filters</td>
                             </tr>
                         }
                         else
@@ -176,7 +176,6 @@ else
         minAmount = null;
         maxAmount = null;
         sortBy = "date_desc";
-        StateHasChanged();
     }
 }
 

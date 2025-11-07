@@ -9,7 +9,7 @@
         Task<List<IBankAccount>> GetAllAccounts();
         Task<IBankAccount?> GetAccount(Guid id);
         Task DeleteAccount(Guid id);
-        Task ApplyInterestAsync(decimal annualRate);
+        Task ApplyMonthlyInterestAsync(decimal annualRate);
         Task SaveAccountsAsync();
     }
 }

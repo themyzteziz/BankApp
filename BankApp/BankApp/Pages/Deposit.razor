@@ -3,20 +3,19 @@
 @using BankApp.Domain
 @using BankApp.Interfaces
 
-<h3>Insättning eller uttag av konton</h3>
+<h3>Deposit and withdraw</h3>
 
 @if (accounts.Count == 0)
 {
-    <p>Inga konton skapade ännu.</p>
+    <p>No accounts created yet.</p>
 }
 else
 {
     <table style="border-collapse: separate; border-spacing: 8px 10px;">
-        <label>Välj konto:</label>
         <tr>
             <td>
                 <select @onchange="OnAccountChanged">
-                    <option value="">Välj konto</option>
+                    <option value="">Select account</option>
                     @foreach (var acc in accounts)
                     {
                         <option value="@acc.Name">@acc.Name (@acc.Currency)</option>
@@ -35,28 +34,28 @@ else
             <table>
                 <tr>
                     <td>
-                        <label>Belopp:</label>
+                        <label>Amount:</label>
                         <InputNumber @bind-Value="transactionModel.Amount" TValue="decimal" />
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <label>Beskrivning:</label>
+                        <label>Description:</label>
                         <InputText @bind-Value="transactionModel.Description" />
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <label>Typ:</label>
+                        <label>Type:</label>
                         <InputSelect @bind-Value="transactionModel.Type">
-                            <option value="@TransactionType.Deposit">Insättning</option>
-                            <option value="@TransactionType.Withdrawal">Uttag</option>
+                            <option value="@TransactionType.Deposit">Deposit</option>
+                            <option value="@TransactionType.Withdrawal">Withdrawal</option>
                         </InputSelect>
                     </td>
                 </tr>
             </table>
 
-            <button type="submit">Utför</button>
+            <button type="submit">Execute</button>
         </EditForm>
 
         @if (!string.IsNullOrEmpty(errorMessage))
@@ -64,7 +63,7 @@ else
             <p style="color:red;">@errorMessage</p>
         }
 
-        <h4 class="mt-4">Transaktioner för @selectedAccount.Name</h4>
+        <h4 class="mt-4">Transactions for @selectedAccount.Name</h4>
         <ul>
             @foreach (var t in selectedAccount.Transactions)
             {

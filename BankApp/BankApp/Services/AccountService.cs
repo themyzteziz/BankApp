@@ -144,24 +144,24 @@ namespace BankApp.Services
         /// </summary>
         /// <param name="annualRatePercent">The annual interest rate, expressed as a percentage. Must be greater than zero.</param>
         /// <returns>A task that represents the asynchronous operation of applying interest to savings accounts.</returns>
-        public async Task ApplyInterestAsync(decimal annualRatePercent)
+        public async Task ApplyMonthlyInterestAsync(decimal annualRatePercent)
         {
             await InitializeAsync();
+
             var savingsAccounts = _accounts
                 .OfType<BankAccount>()
                 .Where(a => a.AccountType == AccountType.Savings)
                 .ToList();
-            if (annualRatePercent <= 0)
-            {
-                Console.WriteLine("[Bank] Interest rate must be positive.");
-                return;
-            }
+
+            decimal annualRate = 2m;
+
             foreach (var account in savingsAccounts)
             {
                 var monthlyRate = annualRatePercent / 12 / 100;
                 var interest = account.Balance * monthlyRate;
+
                 account.Deposit(interest);
-                Console.WriteLine($"[Bank] Applied {interest:F2} {account.Currency} interest to account '{account.Name}' (New balance: {account.Balance:F2} {account.Currency})");
+                Console.WriteLine($"[Bank] Applied {interest} {account.Currency} interest to account '{account.Name}' (New balance: {account.Balance:F2} {account.Currency})");
             }
             await SaveAsync();
         }
