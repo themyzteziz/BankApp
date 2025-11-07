@@ -1,8 +1,56 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+@if (locked)
+{
+    <h3>Ange PIN</h3>
 
-<h1>Välkommen till MS Banken</h1>
+    <input @bind="pin" type="password" />
 
-Du har olika val, du kan skapa konton, göra transaktioner och kolla dina konton osv. 
+    <button @onclick="CheckPin">Lås upp</button>
 
+    @if (errorMessage is not null)
+    {
+        <p style="color:red">@errorMessage</p>
+    }
+}
+else
+{
+    <h2>MS Bank</h2>
+    <p>Välkommen här kan du skapa konton, göra överföringar, se dina konton, göra insättningar och uttag och se din historik </p>
+
+    <button @onclick="Locked">Lås</button>
+}
+
+@code {
+
+    bool locked = true;
+    string pin = "";
+    string correctPin = "1234";
+    string? errorMessage;
+
+    /// <summary>
+    /// Checks if the entered PIN is correct.
+    /// </summary>
+    void CheckPin()
+    {
+        if (pin == correctPin)
+        {
+            locked = false;
+            errorMessage = null;
+        }
+        else
+        {
+            errorMessage = "Fel PIN.";
+            pin = "";
+        }
+    }
+
+    /// <summary>
+    /// Locks the bank interface.
+    /// </summary>
+    void Locked()
+    {
+        locked = true;
+        pin = "";
+    }
+}
