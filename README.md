@@ -97,6 +97,8 @@ Merging my branch to my main
 Git merge featureaccount
 
 ## 💡VG addition
-Interest = Savings accounts automatically earn 2% interest per month based on their current balance and also button to demonstrate 2% increase.
+### Interest  
+Savings accounts automatically earn 2% interest per month based on their current balance and also button to demonstrate 2% increase.
 I added this feature to simulate how real savings accounts work, and to make the application feel more realistic and useful. I created method in AccountService and IAccountService and implemented it in Accounts.Razor.
-PIN Lock =  The page starts locked. You enter a PIN. If the PIN is correct, the content shows. If it's wrong, an error is shown. The "Lock" button locks the page again. This is only for simple access, not real security.
+### PIN Lock 
+The page starts locked. You enter a PIN. If the PIN is correct, the content shows. If it's wrong, an error is shown. The "Lock" button locks the page again. This is only for simple access, not real security.
