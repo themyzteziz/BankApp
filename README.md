@@ -19,44 +19,45 @@ Step 4. The browser will open automatically or you can use the link in the termi
 
 ## 🏦 How to use the app:
 You can create an acoount
-Step 1. Go to Skapa konto
-Step 2. Name your account name (Kontonamn)
-Step 3. Choose what kind of account type bank account or save account (Bankkonto / Sparkonto)
-Step 4. Choose starting amount (Startsaldo)
-Step 5. Click Skapa konto
+Step 1. Go to Create account or /CreateAccount
+Step 2. Name your account name 
+Step 3. Choose what kind of account type bank account or save account
+Step 4. Choose starting balance
+Step 5. Click Create Account
 
 ### You can deposit or withdraw
-Step 1. Go to Insättning/Uttag
-Step 2. Choose an account (Välj konto:)
-Step 3. Type the amount (Belopp:)
-Step 4. Choose deposit or withdraw / Insätt eller Uttag
-Step 5. Click the button (Utför)
+Step 1. Go to Deposit/Withdrawal or /Deposit
+Step 2. Select account
+Step 3. Type the amount 
+Step 4. Write description (optional)
+Step 5. Choose type: deposit or withdraw
+Step 5. Click the button Execute
 
 ### You can transfer money
-Step 1. Go to Överföring (tab)
-Step 2. Choose the account to send from (Från konto)
-Step 3. Choose the account to send to  (Till konto)
-Step 4. Enter the amount (Belopp)
-Step 5. Click transfer (Överför)
+Step 1. Go to Transfer or /Transaction
+Step 2. Choose the account to send from 
+Step 3. Choose the account to send to  
+Step 4. Enter the amount
+Step 5. Click transfer 
 
 ### You can view History
-Step 1. Go to Historik (tab)
-Step 2. You can choose to all accounts or one account (Konto:)
-Step 3. You can see specific types Deposit, Withdrawal and Transfer (Typ:)
-Step 4. You can choose from a specific date (Från:)
-Step 5. You can choose to a specific date (Till:)
-Step 6. You can choose minimum amount of money (Min:)
-Step 7 You can choose maximum amount of money (Max:)
-Step 8 You can sort it by different types by date newest or oldest (Datum) or amount biggest and lowest (Belopp)
+Step 1. Go to History or /History
+Step 2. You can choose to all accounts or one account 
+Step 3. You can see specific types Deposit, Withdrawal and Transfer 
+Step 4. You can choose from a specific date 
+Step 5. You can choose to a specific date 
+Step 6. You can choose minimum amount of money 
+Step 7 You can choose maximum amount of money 
+Step 8 You can sort it by different types by date newest or oldest (Datum) or amount biggest and lowest
 
 ### You can view your accounts
-Step 1. Go to Mina konton
-Now you can see your accounts, you can also remove the accounts by pressing remove button (ta bort) but only if you have 0 amount of money on the account. 
+Step 1. Go to My Accounts or /Accounts
+Now you can see your accounts, you can also remove the accounts by pressing remove button but only if you have 0 amount of money on the account. 
 
 ## 💾 How is data saved?
 Data is saved by using LocalStorage which means its only saved locally and when you open the page again the data will still be there. 
 
-## 🧱 In Solution Explorer my different folder and programs properties
+## 🧱 In Solution Explorer my different folder and programs
 Domain/
 BankAccount.cs   // Represents a bank account
 Transaction.cs  // Represents a transaction
@@ -98,7 +99,9 @@ Git merge featureaccount
 
 ## 💡VG addition
 ### Interest  
-Savings accounts automatically earn 2% interest per month based on their current balance and also button to demonstrate 2% increase.
-I added this feature to simulate how real savings accounts work, and to make the application feel more realistic and useful. I created method in AccountService and IAccountService and implemented it in Accounts.Razor.
+Savings accounts automatically earn 2% interest per month based on their current balance. I added this feature to simulate how real savings accounts work, and to make the application feel more realistic and useful. I created method in AccountService and IAccountService and implemented it in Accounts.Razor.
 ### PIN Lock 
 The page starts locked. You enter a PIN. If the PIN is correct, the content shows. If it's wrong, an error is shown. The "Lock" button locks the page again. This is only for simple access, not real security.
+### Categories
+I added a new Category property to the transaction form. When transferring money, the user can now select a category (Food, Rent, Transport). The selected category is stored with the transaction and displayed in the description in history tab.
+
